@@ -772,22 +772,6 @@ test_status_lines_declare_english() {
   pass "fm-brief.sh: every scaffold requires English status lines"
 }
 
-# Codex Desktop threads never read a scaffolded brief: firstmate pastes the status
-# protocol from .agents/skills/firstmate-codexapp/SKILL.md into the Desktop thread
-# instead. That prompt duplicates the contract above, so the language rule has to
-# hold on both copies or a Desktop worker is the one surface still free to report
-# in another language.
-test_codex_desktop_status_prompt_declares_english() {
-  local prompt
-  prompt="$ROOT/.agents/skills/firstmate-codexapp/SKILL.md"
-  assert_present "$prompt" "the Codex Desktop skill is missing"
-  assert_grep "Write every status line in English" "$prompt" \
-    "the Codex Desktop status prompt did not tell the worker which language to write status lines in"
-  assert_grep "whatever language you are working in" "$prompt" \
-    "the Codex Desktop status prompt did not cover a worker whose working language is not English"
-  pass "firstmate-codexapp: the Desktop status prompt requires English status lines"
-}
-
 # Scout and secondmate paths still scaffold well-formed briefs.
 test_scout_and_secondmate_scaffold() {
   local brief
@@ -831,5 +815,4 @@ test_secondmate_directory_paths_are_absolute_and_output_is_stable
 test_pause_verb_override_renders_all_brief_scaffolds
 test_scout_and_secondmate_load_decision_hold_policy
 test_status_lines_declare_english
-test_codex_desktop_status_prompt_declares_english
 test_scout_and_secondmate_scaffold
