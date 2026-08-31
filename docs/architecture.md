@@ -344,7 +344,7 @@ The [Relay configuration reference](configuration.md#promised-public-replies-sta
 
 ## Project memory belongs to projects
 
-Durable project-intrinsic agent knowledge lives in each project's committed `AGENTS.md`, with `CLAUDE.md` as a real `@AGENTS.md` import pointer.
+Durable project-intrinsic agent knowledge lives in the memory file each project commits, canonically a real `AGENTS.md` with `CLAUDE.md` as an `@AGENTS.md` import pointer.
 Ship briefs prompt crewmates to record that knowledge through the normal delivery path; `data/projects.md` stays a thin private registry.
 Changing a project's memory-file layout is separate authority a ship brief withholds unless it was scaffolded with `--ensure-agents-md`, because a repo firstmate does not own may keep a `CLAUDE.md` its own maintainers wrote, and converting that file into a pointer is a change they never asked for.
 Each project `AGENTS.md` carries a short `## Maintaining this file` self-governance section; `bin/fm-ensure-agents-md.sh` owns the canonical wording and injects it idempotently when creating the skeleton, promoting an existing `CLAUDE.md`, or reconciling an existing `AGENTS.md` that still lacks it.

@@ -61,6 +61,10 @@
 # running fm-ensure-agents-md.sh and forbids creating, renaming, converting, or
 # replacing AGENTS.md and CLAUDE.md, and directs durable knowledge into the
 # memory file the project already has, as it already is.
+# When that project keeps no memory file at all, the default section routes the
+# knowledge to firstmate as a single note: line on the task's status file; the
+# ship scaffold's status protocol permits that one line for that one purpose,
+# adding no state and relaxing nothing else about status appends.
 # --ensure-agents-md opts a ship brief back into the reconciling form: it runs
 # fm-ensure-agents-md.sh and adds that script's self-governance section when a
 # touched project AGENTS.md lacks it. Pass it only for a repo whose agent-memory
