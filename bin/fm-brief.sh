@@ -441,7 +441,7 @@ Do NOT run `fm-ensure-agents-md.sh` here, and do NOT create, rename, convert, re
 An existing `CLAUDE.md` stays exactly the file it is. It belongs to this project's own maintainers, and turning it into an `@AGENTS.md` pointer is a change they never asked for.
 If this task produced durable project-intrinsic knowledge and the project already keeps a memory file, add the knowledge as ordinary content to that existing file, preserving its name, structure, and conventions.
 Record only knowledge useful to almost every future session, and prefer a pointer to the authoritative file, command, or doc over copying the detail.
-If the project keeps no memory file, do not create one: report the knowledge to firstmate instead.
+If the project keeps no memory file, do not create one: append a single `note:` line carrying that knowledge to the status file rule 4 names, so it reaches firstmate instead.
 If firstmate does own this repo's memory-file convention, the brief must be regenerated with `--ensure-agents-md`; do not add that step to this brief by hand.
 EOF
 fi
@@ -475,6 +475,9 @@ $RULE1
    would act on (setup done, bug reproduced, fix implemented, validation passed) and the
    needs-decision/blocked/paused/done/failed states. No step-by-step FYI progress lines;
    firstmate reads your pane for that.
+   A single \`note:\` line is permitted for exactly one purpose - carrying durable project
+   knowledge to firstmate when the Project memory section sends you here because the project
+   keeps no memory file - and it authorises no other use of \`note:\`.
    A mid-task \`working:\` line (including setup complete) is nonterminal: do not end the
    turn after it; continue the same stage until a defined \`done:\` gate under Definition of done.
    Use \`$PAUSED_VERB: {why}\` - distinct from \`blocked:\` - ONLY when you are deliberately idling on a

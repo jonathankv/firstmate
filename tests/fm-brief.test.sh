@@ -428,6 +428,14 @@ test_project_memory_layout_authority_is_opt_in() {
       "$id: default brief lost the durable-knowledge bar"
     assert_grep "prefer a pointer to the authoritative file, command, or doc over copying the detail" "$brief" \
       "$id: default brief lost pointer-over-copy guidance"
+    assert_grep "append a single \`note:\` line carrying that knowledge to the status file rule 4 names" "$brief" \
+      "$id: default brief left the no-memory-file report directive without a channel"
+    assert_grep "A single \`note:\` line is permitted for exactly one purpose" "$brief" \
+      "$id: status protocol did not permit the note: line the project-memory section requires"
+    assert_grep "No step-by-step FYI progress lines" "$brief" \
+      "$id: the note: permission weakened the ban on FYI progress lines"
+    assert_grep "States: working, needs-decision, blocked, paused, done, failed." "$brief" \
+      "$id: note: leaked into the enumerated status states instead of staying one permitted line"
   done
 
   # The opt-in restores the reconciling form for a repo firstmate does own.
@@ -813,6 +821,8 @@ test_scout_and_secondmate_scaffold() {
   assert_grep "report.md" "$brief" "scout brief must point at the report deliverable"
   assert_grep "you may host the Lavish review loop yourself" "$brief" \
     "scout brief must mention the option to host a Lavish review loop"
+  assert_no_grep "A single \`note:\` line is permitted" "$brief" \
+    "scout scaffold carries a note: permission whose only purpose is a project-memory section it does not have"
 
   FM_SECONDMATE_CHARTER='Supervise the alpha domain.' \
     FM_HOME="$BRIEF_HOME" "$ROOT/bin/fm-brief.sh" brief-sm-q6 --secondmate alpha >/dev/null 2>&1 \
@@ -821,6 +831,8 @@ test_scout_and_secondmate_scaffold() {
   assert_present "$brief" "secondmate charter was not scaffolded"
   assert_grep "persistent second mate" "$brief" \
     "secondmate charter must declare its role"
+  assert_no_grep "A single \`note:\` line is permitted" "$brief" \
+    "secondmate charter carries a note: permission whose only purpose is a project-memory section it does not have"
   pass "fm-brief: scout and secondmate code paths still scaffold well-formed briefs"
 }
 
