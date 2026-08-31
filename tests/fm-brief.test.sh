@@ -422,6 +422,12 @@ test_project_memory_layout_authority_is_opt_in() {
       "$id: default brief did not name the flag that grants the authority"
     assert_grep "do not add that step to this brief by hand" "$brief" \
       "$id: default brief did not forbid hand-adding the step it withholds"
+    assert_grep "add the knowledge as ordinary content to that existing file, preserving its name, structure, and conventions" "$brief" \
+      "$id: default brief lost the instruction to record knowledge in the memory file the project already keeps"
+    assert_grep "Record only knowledge useful to almost every future session" "$brief" \
+      "$id: default brief lost the durable-knowledge bar"
+    assert_grep "prefer a pointer to the authoritative file, command, or doc over copying the detail" "$brief" \
+      "$id: default brief lost pointer-over-copy guidance"
   done
 
   # The opt-in restores the reconciling form for a repo firstmate does own.
