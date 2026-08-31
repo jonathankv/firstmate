@@ -1,0 +1,19 @@
+# What the OLD brief directed on a repo firstmate does not own
+# Third-party repo state before (CLAUDE.md written by its own maintainers):
+CLAUDE.md
+
+$ bin/fm-ensure-agents-md.sh .   # the command the old brief handed to every ship crewmate
+promoted: moved CLAUDE.md to AGENTS.md and wrote CLAUDE.md @AGENTS.md pointer in /private/var/folders/x7/lxvbttwd77qcm_wx2qhy9j3r0000gn/T/acme-api.DsH476
+exit=0
+
+# Repo state after:
+AGENTS.md
+CLAUDE.md
+
+$ cat CLAUDE.md   # the maintainers' file, replaced by a pointer
+<!-- Points Claude at AGENTS.md via import; edit AGENTS.md, not this file. -->
+@AGENTS.md
+
+# With this change, the default ship brief hands over no such command:
+$ grep -n 'fm-ensure-agents-md' brief-default-no-layout-authority.md
+56:Do NOT run `fm-ensure-agents-md.sh` here, and do NOT create, rename, convert, replace, or delete `AGENTS.md` or `CLAUDE.md`.

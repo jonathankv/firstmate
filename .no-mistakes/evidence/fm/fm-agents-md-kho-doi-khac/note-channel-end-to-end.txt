@@ -1,0 +1,12 @@
+# End-to-end: the default brief's no-memory-file directive, followed literally
+
+$ sed -n '/If the project keeps no memory file/p' brief-default-no-layout-authority.md
+If the project keeps no memory file, do not create one: append a single `note:` line carrying that knowledge to the status file rule 4 names, so it reaches firstmate instead.
+
+# Worker follows rule 4's exact append command from the same brief, with the one permitted note: line.
+$ echo "note: acme-api pins Node 20 in .nvmrc; CI matrix must match" >> $FM_HOME/state/t9.status
+
+# Firstmate's next wake drain, which is what section 3 runs at session start:
+$ bin/fm-wake-drain.sh
+UNREAD STATUS (new since last drain, not re-printed after this presentation):
+t9 note: acme-api pins Node 20 in .nvmrc; CI matrix must match

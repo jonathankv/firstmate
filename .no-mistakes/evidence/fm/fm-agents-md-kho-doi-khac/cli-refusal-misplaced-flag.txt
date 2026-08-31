@@ -1,0 +1,22 @@
+$ fm-brief.sh t1 acme-api --scout --ensure-agents-md
+error: --ensure-agents-md applies only to ship briefs; a scout writes a report and a secondmate charter carries no project-memory section
+exit=1
+
+$ fm-brief.sh t2 --secondmate --no-projects --ensure-agents-md
+error: --ensure-agents-md applies only to ship briefs; a scout writes a report and a secondmate charter carries no project-memory section
+exit=1
+
+$ ls $FM_HOME/data   # no brief was written by either refused call
+$ bin/fm-brief.sh --help   # usage lines only
+Scaffold a crewmate brief or persistent secondmate charter at
+data/<task-id>/brief.md under the active firstmate home.
+For ordinary tasks, the standard Setup/Rules/Definition-of-done contract is
+filled in. Firstmate then replaces the {TASK} placeholder with the task
+description, acceptance criteria, and context, and may adjust other sections
+when the task genuinely deviates (e.g. working an existing external PR instead
+of shipping a new one).
+Usage: fm-brief.sh <task-id> <repo-name> --mode <no-mistakes|direct-PR|local-only> [--herdr-lab] [--ensure-agents-md]
+       fm-brief.sh <task-id> <repo-name> --scout [--herdr-lab]
+       fm-brief.sh <task-id> --secondmate {<project>...|--no-projects}
+  --scout writes the scout contract instead: the deliverable is a report at
+  data/<task-id>/report.md (no branch, no push, no PR) and the worktree is scratch.
