@@ -8,7 +8,13 @@
 #       leases the worktree under the secondmate <id> so the home survives with
 #       no live process and is never recycled until the lease is released with
 #       "treehouse return". Projects are cloned
-#       from the active home into the secondmate home's projects/ directory.
+#       into the secondmate home's projects/ directory: a no-mistakes or
+#       direct-PR project from the active home clone's origin, and a local-only
+#       project from the active home's clone itself, whose local default branch
+#       is that project's source of truth; the source clone's origin, when it
+#       has one, is carried over, and a remoteless local-only project is
+#       accepted. An existing local-only clone is accepted only when its default
+#       branch already contains the source clone's default tip.
 #       That project list is non-exclusive provisioning data. Pass --no-projects
 #       instead of a project list to seed a project-less home for a domain whose
 #       subject is the firstmate repo itself; it is mutually exclusive with a
@@ -387,6 +393,49 @@ seeded_origin_url() {
   normalize_origin_url "$dst" "$url"
 }
 
+clone_default_branch() {
+  local repo=$1 ref branch
+  ref=$(git -C "$repo" symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null || true)
+  if [ -n "$ref" ]; then
+    printf '%s\n' "${ref#origin/}"
+    return 0
+  fi
+  for branch in main master; do
+    if git -C "$repo" show-ref --verify --quiet "refs/heads/$branch"; then
+      printf '%s\n' "$branch"
+      return 0
+    fi
+  done
+  return 1
+}
+
+clone_local_only_project() {
+  local project=$1 src=$2 dst=$3 url
+  url=$(git -C "$src" remote get-url origin 2>/dev/null || true)
+  git clone --quiet "$src" "$dst" || return 1
+  if [ -n "$url" ]; then
+    git -C "$dst" remote set-url origin "$(normalize_origin_url "$src" "$url")"
+  else
+    git -C "$dst" remote remove origin
+  fi
+}
+
+seeded_local_only_clone_current() {
+  local project=$1 src=$2 dst=$3 default src_tip
+  default=$(clone_default_branch "$src") || {
+    echo "error: cannot determine default branch for project $project at $src; expected origin/HEAD, main, or master" >&2
+    return 1
+  }
+  src_tip=$(git -C "$src" rev-parse --verify --quiet "refs/heads/$default^{commit}") || {
+    echo "error: project $project has no $default branch at $src" >&2
+    return 1
+  }
+  git -C "$dst" merge-base --is-ancestor "$src_tip" "refs/heads/$default" 2>/dev/null || {
+    echo "error: seeded project $project at $dst is behind $src: its $default does not contain $src_tip; bring it up to date with $src before seeding" >&2
+    return 1
+  }
+}
+
 acquire_treehouse_home() {
   local id=$1 home
   # Durably lease a firstmate worktree from the pool. The lease persists with no
@@ -486,12 +535,20 @@ EOF
   if [ -e "$dst" ]; then
     [ -d "$dst" ] || { echo "error: seeded project $project exists at $dst but is not a directory" >&2; return 1; }
     git -C "$dst" rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo "error: seeded project $project at $dst is not a git repo" >&2; return 1; }
+    if [ "$mode" = local-only ]; then
+      seeded_local_only_clone_current "$project" "$src" "$dst" || return 1
+      return 0
+    fi
     url=$(source_origin_url "$project" "$mode" "$src") || return 1
     dst_url=$(seeded_origin_url "$project" "$dst" "$url") || return 1
     [ "$dst_url" = "$url" ] || {
       echo "error: seeded project $project at $dst has origin $dst_url; expected $url" >&2
       return 1
     }
+    return 0
+  fi
+  if [ "$mode" = local-only ]; then
+    clone_local_only_project "$project" "$src" "$dst" || return 1
     return 0
   fi
   url=$(source_origin_url "$project" "$mode" "$src") || return 1
@@ -508,11 +565,13 @@ validate_seed_project() {
 $mode_line
 EOF
   case "$mode" in
-  no-mistakes | direct-PR | local-only) ;;
+  local-only) ;;
+  no-mistakes | direct-PR)
+    url=$(git -C "$src" remote get-url origin 2>/dev/null || true)
+    [ -n "$url" ] || { echo "error: project $project is $mode but has no origin remote" >&2; return 1; }
+    ;;
   *) echo "error: project $project resolves to unknown delivery mode '$mode'" >&2; return 1 ;;
   esac
-  url=$(git -C "$src" remote get-url origin 2>/dev/null || true)
-  [ -n "$url" ] || { echo "error: project $project is $mode but has no origin remote" >&2; return 1; }
 }
 
 SEED_ROLLBACK_ACTIVE=0

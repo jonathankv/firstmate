@@ -158,7 +158,8 @@ Seeding is transactional.
 If validation, cloning, no-mistakes initialization, or registry update fails, generated briefs, new homes, new project clones, and registry edits are rolled back.
 
 Secondmate project lists may include `no-mistakes`, `direct-PR`, and `local-only` projects.
-A `local-only` project lands inside the secondmate home through `bin/fm-merge-local.sh` under the captain's merge authority, or through the landing rule its registry entry records; seeding clones it from the source clone's origin exactly like the other modes.
+A `local-only` project lands inside the secondmate home through `bin/fm-merge-local.sh` under the configured merge authority.
+Seeding clones a `local-only` project from the main home's clone rather than from an origin, because that local default branch is the project's source of truth and its origin falls behind every landing; the source clone's origin is carried over when it has one, a remoteless `local-only` project is accepted, and an existing clone is accepted only when its default branch already contains the main home's default tip.
 For `no-mistakes` projects, seeding initializes only projects newly cloned into a secondmate home and refuses to mutate a preexisting clone that is not already initialized.
 
 ## Record intake for an existing or inherited domain
@@ -246,6 +247,7 @@ Run `bin/fm-teardown.sh <id>` for `kind=secondmate` only when the captain or mai
 
 The safety check is the secondmate's own home.
 Teardown refuses while its `state/*.meta` contains in-flight work.
+Non-forced retirement also refuses while a `local-only` clone in that home has commits on its default branch that the parent home's clone does not have, because nothing pushes landed `local-only` work anywhere else and fleet sync skips those clones; the refusal names the branch and commit count and prints a `git bundle` carry-back into the parent clone to run before retiring.
 Non-forced retirement also refuses while any parent pending-reply for that id is still unresolved.
 A remote route delegates the in-flight guard to its configured host and additionally refuses while the primary has a pending handoff outbox.
 SSH exit 255 preserves the route and local records because remote completion is unknown.
