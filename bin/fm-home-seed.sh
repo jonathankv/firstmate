@@ -479,10 +479,10 @@ clone_project() {
   read -r mode _ <<EOF
 $mode_line
 EOF
-  if [ "$mode" = local-only ]; then
-    echo "error: project $project is local-only; secondmate routes support only no-mistakes and direct-PR projects" >&2
-    return 1
-  fi
+  case "$mode" in
+  no-mistakes | direct-PR | local-only) ;;
+  *) echo "error: project $project resolves to unknown delivery mode '$mode'" >&2; return 1 ;;
+  esac
   if [ -e "$dst" ]; then
     [ -d "$dst" ] || { echo "error: seeded project $project exists at $dst but is not a directory" >&2; return 1; }
     git -C "$dst" rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo "error: seeded project $project at $dst is not a git repo" >&2; return 1; }
@@ -507,10 +507,10 @@ validate_seed_project() {
   read -r mode _ <<EOF
 $mode_line
 EOF
-  if [ "$mode" = local-only ]; then
-    echo "error: project $project is local-only; secondmate routes support only no-mistakes and direct-PR projects" >&2
-    return 1
-  fi
+  case "$mode" in
+  no-mistakes | direct-PR | local-only) ;;
+  *) echo "error: project $project resolves to unknown delivery mode '$mode'" >&2; return 1 ;;
+  esac
   url=$(git -C "$src" remote get-url origin 2>/dev/null || true)
   [ -n "$url" ] || { echo "error: project $project is $mode but has no origin remote" >&2; return 1; }
 }
