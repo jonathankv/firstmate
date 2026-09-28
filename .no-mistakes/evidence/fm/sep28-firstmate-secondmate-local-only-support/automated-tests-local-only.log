@@ -1,0 +1,23 @@
+ok - home seeding clones a local-only project from the main home's clone and keeps its origin
+ok - home seeding accepts a remoteless local-only project
+Note: switching to 'ca40017c92212b3eae6f8213d0d15d2fb418caa7'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+ok - home seeding refuses an existing local-only clone until it contains the main home's default tip
+ok - secondmate teardown refuses to discard landed local-only work until the parent clone holds it
+bash "$F"  1.74s user 2.77s system 74% cpu 6.087 total
+exit=0

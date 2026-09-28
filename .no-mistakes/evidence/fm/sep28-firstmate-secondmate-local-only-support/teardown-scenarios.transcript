@@ -1,0 +1,38 @@
+tmux server addressed by the scripts: /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/tmux/tmux-501/fm-lab
+secondmate alpha main: cd48d8a   parent alpha main: 86dd6fc
+
+### S9a: normal retirement must refuse while the secondmate's alpha clone holds landed work the parent lacks
+$ bin/fm-teardown.sh design
+stderr: fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home
+stderr: ●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+stderr: ●  WATCHER DOWN - SUPERVISION IS OFF
+stderr: ●  1 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+stderr: ●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+stderr: ●  This is a supervision warning only; the guarded operation WILL still run.
+stderr: ●  watcher supervision needs Stop-owned automatic recovery; inspect the hook registration and startup status before ending the turn.
+stderr: ●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+stderr: REFUSED: secondmate design still holds landed local-only work that the parent home /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home does not have.
+stderr: project alpha: 1 commit(s) on main in /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/design-home/projects/alpha are absent from the parent clone /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/projects/alpha
+stderr: Carry them back first: git -C /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/design-home/projects/alpha bundle create /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-design-alpha.bundle main && git -C /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/projects/alpha fetch /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-design-alpha.bundle main:refs/heads/secondmate/design/main
+stderr: Land that work in the parent home's clone, or get the captain's explicit OK to discard, then --force.
+[exit 1]
+  design-home present: yes | spawn record /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/state/design.meta: present | registry route: 1 | lab tmux windows: [firstmate:fm-design ]
+
+### S9b: captain runs the printed carry-back
+$ git -C /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/design-home/projects/alpha bundle create /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-design-alpha.bundle main && git -C /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/projects/alpha fetch /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-design-alpha.bundle main:refs/heads/secondmate/design/main
+From /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-design-alpha.bundle
+ * [new branch]      main       -> secondmate/design/main
+[exit 0]
+  parent now has refs/heads/secondmate/design/main = cd48d8a
+  secondmate main tip                        = cd48d8a
+  commits in secondmate main absent from parent now: 0
+
+### S9c: retire again; the parent clone now holds the work, so retirement proceeds
+$ bin/fm-teardown.sh design
+teardown design complete (window firstmate:fm-design, worktree /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/design-home)
+stderr: fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home
+stderr: WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+[exit 0]
+  design-home present: no | spawn record /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/state/design.meta: gone | registry route: 0
+0 | lab tmux windows: []
+  parent still holds the carried-back commit: cd48d8a task1: shipped inside the design secondmate home

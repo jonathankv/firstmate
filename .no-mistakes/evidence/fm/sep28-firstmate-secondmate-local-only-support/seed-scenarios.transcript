@@ -1,0 +1,102 @@
+### S1: seed alpha (local-only, origin present, source checked out on hotfix) into design-home
+
+$ env FM_SECONDMATE_CHARTER=design domain bin/fm-home-seed.sh design /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/design-home alpha
+Note: switching to 'ca40017c92212b3eae6f8213d0d15d2fb418caa7'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+scaffolded: /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/data/design/brief.md (secondmate charter)
+home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/design-home
+[exit 0]
+--- /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/design-home/projects/alpha
+HEAD branch:        main
+refs/heads/main:    86dd6fc3acbce32f0959807f2f3af90665eb31d8
+origin/HEAD:        refs/remotes/origin/main
+origin url:         /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/alpha-origin.git
+branches:           main origin origin/hotfix origin/main 
+log:
+  86dd6fc (HEAD -> main, origin/main, origin/HEAD) landed locally via fm-merge-local, never pushed
+  ef36ff1 initial
+source main tip:    86dd6fc3acbce32f0959807f2f3af90665eb31d8
+stale origin tip:   ef36ff1bf8fcd5e76966e92181fc59428cbce461
+--- parent /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/data/secondmates.md:
+- design - design domain (home: /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/design-home; scope: design domain; projects: alpha; added 2026-09-29)
+--- design-home markers: .fm-secondmate-home=design  .fm-secondmate-parent=schema=fm-secondmate-parent.v1
+route=local
+parent_home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home
+--- design-home/data/projects.md:
+- alpha [local-only] - alpha, local-only with an origin (added 2026-09-29)
+
+### S2: seed beta (remoteless local-only, source checked out on feature) into ops-home
+
+$ env FM_SECONDMATE_CHARTER=ops domain bin/fm-home-seed.sh ops /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/ops-home beta
+Note: switching to 'ca40017c92212b3eae6f8213d0d15d2fb418caa7'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+scaffolded: /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/data/ops/brief.md (secondmate charter)
+home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/ops-home
+[exit 0]
+--- /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/ops-home/projects/beta
+HEAD branch:        main
+refs/heads/main:    ef36ff1bf8fcd5e76966e92181fc59428cbce461
+origin/HEAD:        fatal: ref refs/remotes/origin/HEAD is not a symbolic ref
+(none)
+origin url:         error: No such remote 'origin'
+(no origin remote)
+branches:           main 
+log:
+  ef36ff1 (HEAD -> main) initial
+source main tip:    ef36ff1bf8fcd5e76966e92181fc59428cbce461
+
+### S3: refuse gamma (local-only source with no default branch: only trunk, no origin)
+
+$ env FM_SECONDMATE_CHARTER=gamma domain bin/fm-home-seed.sh gammadom /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/gamma-home gamma
+error: cannot determine default branch for project gamma at /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/projects/gamma; expected origin/HEAD, main, or master
+[exit 1]
+gamma-home exists? no
+gammadom route registered? 0
+
+### S4: refuse delta (registry posture the parser cannot resolve: forge=bogus)
+
+$ env FM_SECONDMATE_CHARTER=delta domain bin/fm-home-seed.sh deltadom /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/delta-home delta
+refused: unknown forge "bogus" registered for delta in /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/data/projects.md; the accepted value is forge=gerrit, or no forge token at all for a forge whose pull requests no-mistakes already drives; correct the registry entry
+error: project delta does not resolve to a delivery posture (see the refusal above); correct /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/data/projects.md
+[exit 1]
+delta-home exists? no
+
+### S5: epsilon registered with an unknown mode token [bogus-mode]
+
+$ env FM_SECONDMATE_CHARTER=epsilon domain bin/fm-home-seed.sh epsdom /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/epsilon-home epsilon
+warn: unknown mode "bogus-mode" for epsilon; defaulting to no-mistakes off
+error: project epsilon is no-mistakes but has no origin remote
+[exit 1]
+epsilon-home exists? no
+fm-project-mode.sh epsilon -> warn: unknown mode "bogus-mode" for epsilon; defaulting to no-mistakes off
+no-mistakes off

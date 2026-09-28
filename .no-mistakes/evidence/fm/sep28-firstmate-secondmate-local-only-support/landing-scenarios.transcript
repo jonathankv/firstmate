@@ -1,0 +1,49 @@
+### S6: reseed alpha into design-home (existing up-to-date local-only clone must be accepted)
+
+$ env FM_HOME=/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home bin/fm-home-seed.sh design /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/design-home alpha
+home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/design-home
+[exit 0]
+design routes in registry: 1
+
+### S7: parent lands a new commit on beta main after ops-home was seeded; reseed must refuse until the clone catches up
+parent beta main tip: ff5c6d8b57816c4be312b23efdb14d530e4d5103   ops-home beta main tip: ef36ff1bf8fcd5e76966e92181fc59428cbce461
+
+$ env FM_HOME=/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home bin/fm-home-seed.sh ops /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/ops-home beta
+error: seeded project beta at /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/ops-home/projects/beta is behind /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/projects/beta: its main does not contain ff5c6d8b57816c4be312b23efdb14d530e4d5103; bring it up to date with /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/projects/beta before seeding
+[exit 1]
+ops-home clone still present? yes   ops route still registered: 1
+--- captain brings the clone up to date from the main home's clone path, then reseeds
+
+$ git -C /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/ops-home/projects/beta pull -q --ff-only /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/projects/beta main
+[exit 0]
+ops-home beta main tip now: ff5c6d8b57816c4be312b23efdb14d530e4d5103
+
+$ env FM_HOME=/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home bin/fm-home-seed.sh ops /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/ops-home beta
+home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/ops-home
+[exit 0]
+
+### S8: land a local-only ship task INSIDE design-home with its own bin/fm-merge-local.sh
+--- crewmate work: ship branch fm/task1 in a worktree of the secondmate home's alpha clone
+--- design-home alpha before: main=86dd6fc fm/task1=cd48d8a
+
+$ env FM_HOME=/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/design-home /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/design-home/bin/fm-merge-local.sh task1
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  1 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  watcher supervision needs Stop-owned automatic recovery; inspect the hook registration and startup status before ending the turn.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+merged fm/task1 into local main (86dd6fc -> cd48d8a) in /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/design-home/projects/alpha
+[exit 0]
+--- design-home alpha after:  main=cd48d8a
+  cd48d8a (HEAD -> main, fm/task1) task1: shipped inside the design secondmate home
+  86dd6fc (origin/main, origin/HEAD) landed locally via fm-merge-local, never pushed
+  ef36ff1 initial
+parent main home alpha main: 86dd6fc  (commits in secondmate main not in parent: 1)
+
+### S9 prep: lab tmux server with the design secondmate endpoint window, and the parent's spawn record
+lab socket: /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/tmux/tmux-501/fm-lab (server pid 14338)
+windows: firstmate:fm-design 
+plain tmux under TMUX=$SOCK resolves to: /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/tmux/tmux-501/fm-lab
+spawn record written: /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.IutFBj/home/state/design.meta
