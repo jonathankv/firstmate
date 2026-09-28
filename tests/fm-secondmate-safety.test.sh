@@ -893,6 +893,11 @@ test_home_seed_accepts_local_only_project() {
   git -C "$home/projects/alpha" -c user.name='Firstmate Tests' -c user.email='tests@example.invalid' \
     commit -qm 'landed locally, never pushed'
   source_tip=$(git -C "$home/projects/alpha" rev-parse HEAD)
+  git -C "$home/projects/alpha" checkout -q -b hotfix
+  printf 'hotfix\n' > "$home/projects/alpha/hotfix.txt"
+  git -C "$home/projects/alpha" add hotfix.txt
+  git -C "$home/projects/alpha" -c user.name='Firstmate Tests' -c user.email='tests@example.invalid' \
+    commit -qm 'work on a branch the main home happens to have checked out'
   printf '%s\n' '- alpha [local-only] - alpha project (added 2026-06-22)' > "$home/data/projects.md"
 
   if ! FM_HOME="$home" FM_SECONDMATE_CHARTER='design domain' \
@@ -900,9 +905,13 @@ test_home_seed_accepts_local_only_project() {
     fail "seed refused a local-only project: $(cat "$err")"
   fi
   [ -d "$subhome/projects/alpha/.git" ] || fail "seed did not clone the local-only project into the secondmate home"
-  seeded_tip=$(git -C "$subhome/projects/alpha" rev-parse HEAD)
+  [ "$(git -C "$subhome/projects/alpha" symbolic-ref --short HEAD)" = main ] \
+    || fail "seed checked the local-only clone out on the source's checked-out branch instead of its default branch"
+  seeded_tip=$(git -C "$subhome/projects/alpha" rev-parse refs/heads/main)
   [ "$seeded_tip" = "$source_tip" ] \
     || fail "seed cloned the local-only project from its stale origin instead of the main home's clone"
+  [ "$(git -C "$subhome/projects/alpha" symbolic-ref refs/remotes/origin/HEAD)" = refs/remotes/origin/main ] \
+    || fail "seed left the local-only clone's origin/HEAD off the default branch"
   origin_url=$(git -C "$subhome/projects/alpha" remote get-url origin)
   [ "$origin_url" = "$(cd "$remote" && pwd -P)" ] \
     || fail "seed did not carry the source clone's origin over to the local-only clone: $origin_url"
@@ -921,6 +930,7 @@ test_home_seed_accepts_remoteless_local_only_project() {
   mkdir -p "$home/projects" "$home/data" "$home/state"
   fm_git_init_commit "$home/projects/alpha"
   source_tip=$(git -C "$home/projects/alpha" rev-parse HEAD)
+  git -C "$home/projects/alpha" checkout -q -b hotfix
   printf '%s\n' '- alpha [local-only] - alpha project (added 2026-06-22)' > "$home/data/projects.md"
 
   if ! FM_HOME="$home" FM_SECONDMATE_CHARTER='design domain' \
@@ -928,7 +938,9 @@ test_home_seed_accepts_remoteless_local_only_project() {
     fail "seed refused a remoteless local-only project: $(cat "$err")"
   fi
   [ -d "$subhome/projects/alpha/.git" ] || fail "seed did not clone the remoteless local-only project"
-  seeded_tip=$(git -C "$subhome/projects/alpha" rev-parse HEAD)
+  [ "$(git -C "$subhome/projects/alpha" symbolic-ref --short HEAD)" = main ] \
+    || fail "seed checked the remoteless local-only clone out on the source's checked-out branch instead of main"
+  seeded_tip=$(git -C "$subhome/projects/alpha" rev-parse refs/heads/main)
   [ "$seeded_tip" = "$source_tip" ] || fail "seed did not clone the remoteless local-only project at the main home's tip"
   if git -C "$subhome/projects/alpha" remote get-url origin >/dev/null 2>&1; then
     fail "seed left the remoteless local-only clone pointing at an origin the source does not have"

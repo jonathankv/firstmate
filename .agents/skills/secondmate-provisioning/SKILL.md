@@ -13,7 +13,7 @@ metadata:
 
 Use this reference before creating, seeding, validating, launching, handing backlog to, recovering, pushing inherited local material into, or retiring a persistent secondmate, and before editing `data/secondmates.md`.
 
-Keep the always-inline routing rules in `AGENTS.md` authoritative: route by natural-language `scope:`, a `local-only` project routes by scope like any other, and secondmates are idle by default.
+Keep the always-inline routing rules in `AGENTS.md` authoritative: route by natural-language `scope:`, a `local-only` project routes by scope to a local secondmate like any other and never to a remote one, and secondmates are idle by default.
 
 ## Routing table
 
@@ -157,9 +157,9 @@ Run `bin/fm-home-seed.sh validate` when checking registry integrity; its header 
 Seeding is transactional.
 If validation, cloning, no-mistakes initialization, or registry update fails, generated briefs, new homes, new project clones, and registry edits are rolled back.
 
-Secondmate project lists may include `no-mistakes`, `direct-PR`, and `local-only` projects.
+A local secondmate's project list may include `no-mistakes`, `direct-PR`, and `local-only` projects; a remote route still refuses `local-only` because its host cannot hold that clone.
 A `local-only` project lands inside the secondmate home through `bin/fm-merge-local.sh` under the configured merge authority.
-Seeding clones a `local-only` project from the main home's clone rather than from an origin, because that local default branch is the project's source of truth and its origin falls behind every landing; the source clone's origin is carried over when it has one, a remoteless `local-only` project is accepted, and an existing clone is accepted only when its default branch already contains the main home's default tip.
+Seeding clones a `local-only` project from the main home's clone rather than from an origin, pinned to that clone's default branch whatever it has checked out, because that local default branch is the project's source of truth and its origin falls behind every landing; the source clone's origin is carried over when it has one, a remoteless `local-only` project is accepted, a source with no local default branch is refused, and an existing clone is accepted only when its default branch already contains the main home's default tip.
 For `no-mistakes` projects, seeding initializes only projects newly cloned into a secondmate home and refuses to mutate a preexisting clone that is not already initialized.
 
 ## Record intake for an existing or inherited domain

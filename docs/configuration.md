@@ -690,7 +690,7 @@ Non-forced retirement refuses while a `local-only` clone in the home holds defau
 
 ### Project modes and backlog handoff
 
-Secondmate routes cover `no-mistakes`, `direct-PR`, and `local-only` projects; a `local-only` project is cloned from the main home's clone rather than from its origin, with or without a remote, and lands inside the secondmate home through the guarded local fast-forward path under the configured merge authority.
+Local secondmate routes cover `no-mistakes`, `direct-PR`, and `local-only` projects, while a remote route still refuses `local-only`; a `local-only` project is cloned from the main home's clone on its default branch rather than from its origin, with or without a remote, and lands inside the secondmate home through the guarded local fast-forward path under the configured merge authority.
 For `no-mistakes` projects, seeding initializes only projects newly cloned into a secondmate home and refuses to mutate a preexisting clone that is not already initialized.
 
 After creating a secondmate, move existing main-backlog queued items that you have judged in-scope with `fm-backlog-handoff.sh <secondmate-id> <item-key>...`; it refuses In flight, Done, or non-secondmate homes, and its [script header](../bin/fm-backlog-handoff.sh) owns route-specific wake outcomes and retries.

@@ -10,11 +10,14 @@
 #       "treehouse return". Projects are cloned
 #       into the secondmate home's projects/ directory: a no-mistakes or
 #       direct-PR project from the active home clone's origin, and a local-only
-#       project from the active home's clone itself, whose local default branch
-#       is that project's source of truth; the source clone's origin, when it
-#       has one, is carried over, and a remoteless local-only project is
-#       accepted. An existing local-only clone is accepted only when its default
-#       branch already contains the source clone's default tip.
+#       project from the active home's clone itself, pinned to that clone's
+#       default branch (origin/HEAD, else main, else master) whatever it has
+#       checked out, because that local default branch is the project's source
+#       of truth; the source clone's origin, when it has one, is carried over
+#       with origin/HEAD on that branch, and a remoteless local-only project is
+#       accepted. A source with no local default branch is refused, and an
+#       existing local-only clone is accepted only when its default branch
+#       already contains the source clone's default tip.
 #       That project list is non-exclusive provisioning data. Pass --no-projects
 #       instead of a project list to seed a project-less home for a domain whose
 #       subject is the firstmate repo itself; it is mutually exclusive with a
@@ -409,10 +412,25 @@ clone_default_branch() {
   return 1
 }
 
+local_only_source_default() {
+  local project=$1 src=$2 default
+  default=$(clone_default_branch "$src") || {
+    echo "error: cannot determine default branch for project $project at $src; expected origin/HEAD, main, or master" >&2
+    return 1
+  }
+  git -C "$src" rev-parse --verify --quiet "refs/heads/$default^{commit}" >/dev/null || {
+    echo "error: project $project has no $default branch at $src" >&2
+    return 1
+  }
+  printf '%s\n' "$default"
+}
+
 clone_local_only_project() {
-  local project=$1 src=$2 dst=$3 url
+  local project=$1 src=$2 dst=$3 default url
+  default=$(local_only_source_default "$project" "$src") || return 1
   url=$(git -C "$src" remote get-url origin 2>/dev/null || true)
-  git clone --quiet "$src" "$dst" || return 1
+  git clone --quiet --branch "$default" "$src" "$dst" || return 1
+  git -C "$dst" remote set-head origin "$default" || return 1
   if [ -n "$url" ]; then
     git -C "$dst" remote set-url origin "$(normalize_origin_url "$src" "$url")"
   else
@@ -422,14 +440,8 @@ clone_local_only_project() {
 
 seeded_local_only_clone_current() {
   local project=$1 src=$2 dst=$3 default src_tip
-  default=$(clone_default_branch "$src") || {
-    echo "error: cannot determine default branch for project $project at $src; expected origin/HEAD, main, or master" >&2
-    return 1
-  }
-  src_tip=$(git -C "$src" rev-parse --verify --quiet "refs/heads/$default^{commit}") || {
-    echo "error: project $project has no $default branch at $src" >&2
-    return 1
-  }
+  default=$(local_only_source_default "$project" "$src") || return 1
+  src_tip=$(git -C "$src" rev-parse --verify --quiet "refs/heads/$default^{commit}")
   git -C "$dst" merge-base --is-ancestor "$src_tip" "refs/heads/$default" 2>/dev/null || {
     echo "error: seeded project $project at $dst is behind $src: its $default does not contain $src_tip; bring it up to date with $src before seeding" >&2
     return 1
@@ -565,7 +577,9 @@ validate_seed_project() {
 $mode_line
 EOF
   case "$mode" in
-  local-only) ;;
+  local-only)
+    local_only_source_default "$project" "$src" >/dev/null || return 1
+    ;;
   no-mistakes | direct-PR)
     url=$(git -C "$src" remote get-url origin 2>/dev/null || true)
     [ -n "$url" ] || { echo "error: project $project is $mode but has no origin remote" >&2; return 1; }
