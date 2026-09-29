@@ -693,7 +693,7 @@ Non-forced retirement refuses while a `local-only` clone in the home holds defau
 Local secondmate routes cover `no-mistakes`, `direct-PR`, and `local-only` projects, while a remote route still refuses `local-only`; a `local-only` project is cloned from the main home's clone on its default branch rather than from its origin, with or without a remote, and lands inside the secondmate home through the guarded local fast-forward path under the configured merge authority.
 For `no-mistakes` projects, seeding initializes only projects newly cloned into a secondmate home and refuses to mutate a preexisting clone that is not already initialized.
 
-After creating a secondmate, move existing main-backlog queued items that you have judged in-scope with `fm-backlog-handoff.sh <secondmate-id> <item-key>...`; it refuses In flight, Done, or non-secondmate homes, and its [script header](../bin/fm-backlog-handoff.sh) owns route-specific wake outcomes and retries.
+After creating a secondmate, move existing main-backlog queued items that you have judged in-scope with `fm-backlog-handoff.sh <secondmate-id> <item-key>...`; it refuses In flight, Done, or non-secondmate homes, and refuses a `local-only` item bound for a remote secondmate or for a local home that holds no clone of that project; its [script header](../bin/fm-backlog-handoff.sh) owns route-specific wake outcomes and retries.
 Set `FM_SECONDMATE_CHARTER` to seed from inline charter text when no filled charter brief exists; set `FM_SECONDMATE_SCOPE` when the routing scope should differ from the charter text.
 
 The seeded home's `data/charter.md` owns the standard secondmate lifecycle and escalation contract; the route file points to it through the existing `home:` field instead of adding another pointer.

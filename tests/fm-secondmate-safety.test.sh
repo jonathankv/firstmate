@@ -3247,6 +3247,7 @@ test_backlog_handoff_refuses_local_only_item_without_clone() {
   seed_secondmate_home_marker "$subhome" design
   subhome_abs=$(cd "$subhome" && pwd -P)
   printf -- '- design - feature work (home: %s; scope: feature work; projects: beta; added 2026-06-22)\n' "$subhome_abs" > "$home/data/secondmates.md"
+  printf -- '- ios - iOS work (host: remote-mac; root: %s/remote-root; home: %s/remote-home; scope: iOS work; projects: alpha; added 2026-06-22)\n' "$TMP_ROOT" "$TMP_ROOT" >> "$home/data/secondmates.md"
   cat > "$home/data/projects.md" <<'EOF'
 - alpha [local-only] - local project (added 2026-06-22)
 - beta [no-mistakes] - forge project (added 2026-06-22)
@@ -3276,6 +3277,21 @@ EOF
     || fail "local-only refusal mutated the main backlog"
   [ ! -e "$subhome/data/backlog.md" ] || ! grep -F 'alpha-task' "$subhome/data/backlog.md" >/dev/null \
     || fail "local-only refusal copied the item into the secondmate backlog"
+
+  # A remote route can never hold the clone, so it refuses before staging.
+  if command -v tasks-axi >/dev/null 2>&1; then
+    if out=$(FM_HOME="$home" "$ROOT/bin/fm-backlog-handoff.sh" ios beta-task alpha-task 2>&1); then
+      fail "remote handoff accepted a local-only item"
+    fi
+    printf '%s\n' "$out" | grep -F 'refusing to hand off alpha-task: local-only project alpha cannot be cloned into remote secondmate ios' >/dev/null \
+      || fail "remote local-only refusal did not name the item, project, and secondmate: $out"
+    printf '%s\n' "$out" | grep -F 'beta-task' >/dev/null \
+      && fail "remote local-only refusal also blamed the no-mistakes item: $out"
+    cmp -s "$before_main" "$home/data/backlog.md" \
+      || fail "remote local-only refusal mutated the main backlog"
+    [ ! -e "$home/data/handoff/ios.outbox.md" ] || ! grep -F 'task' "$home/data/handoff/ios.outbox.md" >/dev/null \
+      || fail "remote local-only refusal staged items into the outbox"
+  fi
 
   # Once the home holds the project's clone, the clone check no longer refuses.
   fm_git_init_commit "$subhome/projects/alpha"
