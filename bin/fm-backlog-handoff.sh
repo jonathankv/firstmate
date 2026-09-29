@@ -24,7 +24,8 @@
 #     archiving;
 #   - refusing, before anything moves, an item whose `repo:` names a project
 #     this home registers as `local-only` when the destination is a remote
-#     home or a local home that holds no clone of it at projects/<repo>;
+#     home or a local home that holds no clone of it at projects/<repo> (a
+#     symlinked projects/<repo> entry does not count as a clone);
 #   - the multi-key classification and idempotent per-key reporting: a key
 #     already present in the secondmate backlog is reported and skipped, and if
 #     any key matches neither backlog nothing is moved;
@@ -326,9 +327,11 @@ backlog_key_repo() {
 
 # A local-only project has no forge to clone from at dispatch, so its work can
 # run only in a home that already holds that project's clone, which a remote
-# home never can. Report every such key and fail if any was found. Git reports
-# the clone's physical toplevel, so it is compared with the physical path of
-# projects/<repo>, which seeding allows to sit behind a symlink inside the home.
+# home never can. Report every such key and fail if any was found. A symlinked
+# projects/<repo> entry is refused, because retirement skips it and would never
+# check the work landed there. Git reports the clone's physical toplevel, so it
+# is compared with the physical path of projects/<repo>, whose projects/
+# directory seeding allows to sit behind a symlink inside the home.
 local_only_items_routable() { # <secondmate-id> <home, empty for a remote route> <keys...>
   local id=$1 home=$2 key repo mode_line clone rc=0
   shift 2
@@ -340,7 +343,8 @@ local_only_items_routable() { # <secondmate-id> <home, empty for a remote route>
     if [ -z "$home" ]; then
       echo "error: refusing to hand off $key: local-only project $repo cannot be cloned into remote secondmate $id; route it to a local secondmate holding its clone or keep the work in this home" >&2
       rc=1
-    elif ! clone=$(cd "$home/projects/$repo" 2>/dev/null && pwd -P) \
+    elif [ -L "$home/projects/$repo" ] \
+      || ! clone=$(cd "$home/projects/$repo" 2>/dev/null && pwd -P) \
       || [ "$(git -C "$clone" rev-parse --show-toplevel 2>/dev/null || true)" != "$clone" ]; then
       echo "error: refusing to hand off $key: local-only project $repo has no clone at $home/projects/$repo; seed it into secondmate $id first (bin/fm-home-seed.sh) or keep the work in this home" >&2
       rc=1

@@ -3239,6 +3239,26 @@ EOF
   pass "fm-backlog-handoff refuses Done items under whitespace section headings and unsafe homes"
 }
 
+# Hand <keys> off to local secondmate `design` behind a live fake receiver, so a
+# successful move also wakes it and the handoff exits 0.
+handoff_to_live_design() { # <main-home> <sub-home-abs> <key>...
+  local home=$1 sub=$2 fake="$1.fake" fakebin
+  shift 2
+  fakebin=$(make_fake_tmux "$fake")
+  cat > "$home/state/design.meta" <<EOF
+window=firstmate:fm-design
+kind=secondmate
+harness=claude
+backend=tmux
+home=$sub
+worktree=$sub
+EOF
+  PATH="$fakebin:$PATH" FM_HOME="$home" FM_FAKE_TMUX_WINDOW='firstmate:fm-design' \
+    FM_FAKE_TMUX_LOG="$fake/tmux.log" FM_FAKE_TMUX_CAPTURE="$fake/pane.txt" \
+    FM_SEND_SETTLE=0 FM_SEND_SLEEP=0 FM_SEND_RETRIES=1 \
+    "$ROOT/bin/fm-backlog-handoff.sh" design "$@"
+}
+
 test_backlog_handoff_refuses_local_only_item_without_clone() {
   local home subhome subhome_abs before_main out
   home="$TMP_ROOT/handoff-local-only-main"
@@ -3293,16 +3313,64 @@ EOF
       || fail "remote local-only refusal staged items into the outbox"
   fi
 
-  # Once the home holds the project's clone, the clone check no longer refuses.
+  # Once the home holds the project's clone, the item moves.
   fm_git_init_commit "$subhome/projects/alpha"
-  out=$(FM_HOME="$home" "$ROOT/bin/fm-backlog-handoff.sh" design alpha-task 2>&1) || true
-  printf '%s\n' "$out" | grep -F 'has no clone' >/dev/null \
-    && fail "handoff still refused a local-only item after its clone was seeded: $out"
+  if command -v tasks-axi >/dev/null 2>&1; then
+    out=$(handoff_to_live_design "$home" "$subhome_abs" alpha-task 2>&1) \
+      || fail "handoff failed for a local-only item after its clone was seeded: $out"
+    assert_grep 'alpha-task' "$subhome/data/backlog.md" "local-only item did not reach the secondmate backlog"
+    assert_no_grep 'alpha-task' "$home/data/backlog.md" "local-only item stayed in the main backlog"
+  fi
   pass "fm-backlog-handoff refuses a local-only item for a home without its clone"
+}
+
+test_backlog_handoff_refuses_symlinked_local_only_clone() {
+  local home subhome subhome_abs before_main target out
+  home="$TMP_ROOT/handoff-local-only-linked-main"
+  subhome="$TMP_ROOT/handoff-local-only-linked-sub"
+  mkdir -p "$home/data" "$home/state"
+  seed_secondmate_home_marker "$subhome" design
+  subhome_abs=$(cd "$subhome" && pwd -P)
+  mkdir -p "$subhome/projects"
+  fm_git_init_commit "$subhome/project-store/alpha"
+  fm_git_init_commit "$TMP_ROOT/handoff-local-only-linked-outside/alpha"
+  printf -- '- design - feature work (home: %s; scope: feature work; projects: alpha; added 2026-06-22)\n' "$subhome_abs" > "$home/data/secondmates.md"
+  printf -- '- alpha [local-only] - local project (added 2026-06-22)\n' > "$home/data/projects.md"
+  cat > "$home/data/backlog.md" <<'EOF'
+## In flight
+
+## Queued
+- [ ] alpha-task - local work (repo: alpha)
+
+## Done
+EOF
+  before_main="$TMP_ROOT/handoff-local-only-linked-main.before"
+  cp "$home/data/backlog.md" "$before_main"
+
+  # A projects/<repo> symlink is refused whether its clone sits elsewhere in the
+  # home, where retirement never checks it, or outside the home entirely.
+  for target in "$subhome_abs/project-store/alpha" "$TMP_ROOT/handoff-local-only-linked-outside/alpha"; do
+    rm -f "$subhome/projects/alpha"
+    ln -s "$target" "$subhome/projects/alpha"
+    if out=$(FM_HOME="$home" "$ROOT/bin/fm-backlog-handoff.sh" design alpha-task 2>&1); then
+      fail "handoff accepted a local-only item whose projects/alpha is a symlink to $target"
+    fi
+    printf '%s\n' "$out" | grep -F "refusing to hand off alpha-task: local-only project alpha has no clone at $subhome_abs/projects/alpha" >/dev/null \
+      || fail "symlinked-clone refusal did not name the item, project, and clone path: $out"
+    cmp -s "$before_main" "$home/data/backlog.md" \
+      || fail "symlinked-clone refusal mutated the main backlog"
+    [ ! -e "$subhome/data/backlog.md" ] || ! grep -F 'alpha-task' "$subhome/data/backlog.md" >/dev/null \
+      || fail "symlinked-clone refusal copied the item into the secondmate backlog"
+  done
+  pass "fm-backlog-handoff refuses a local-only item whose projects/<repo> entry is a symlink"
 }
 
 test_backlog_handoff_accepts_local_only_clone_behind_projects_symlink() {
   local home subhome subhome_abs out
+  if ! command -v tasks-axi >/dev/null 2>&1; then
+    echo "skip: tasks-axi not found (backlog handoff delegates to it)"
+    return 0
+  fi
   home="$TMP_ROOT/handoff-local-only-symlink-main"
   subhome="$TMP_ROOT/handoff-local-only-symlink-sub"
   mkdir -p "$home/data" "$home/state"
@@ -3323,9 +3391,10 @@ test_backlog_handoff_accepts_local_only_clone_behind_projects_symlink() {
 ## Done
 EOF
 
-  out=$(FM_HOME="$home" "$ROOT/bin/fm-backlog-handoff.sh" design alpha-task 2>&1) || true
-  printf '%s\n' "$out" | grep -F 'has no clone' >/dev/null \
-    && fail "handoff refused a local-only clone reached through a projects/ symlink inside the home: $out"
+  out=$(handoff_to_live_design "$home" "$subhome_abs" alpha-task 2>&1) \
+    || fail "handoff failed for a local-only clone reached through a projects/ symlink inside the home: $out"
+  assert_grep 'alpha-task' "$subhome/data/backlog.md" "local-only item behind a projects/ symlink did not reach the secondmate backlog"
+  assert_no_grep 'alpha-task' "$home/data/backlog.md" "local-only item behind a projects/ symlink stayed in the main backlog"
   pass "fm-backlog-handoff accepts a local-only clone behind a projects/ symlink inside the home"
 }
 
@@ -3414,4 +3483,5 @@ test_secondmate_charter_brief_is_idle_by_default
 test_backlog_handoff_aborts_safely
 test_backlog_handoff_refuses_done_items_and_non_secondmate_homes
 test_backlog_handoff_refuses_local_only_item_without_clone
+test_backlog_handoff_refuses_symlinked_local_only_clone
 test_backlog_handoff_accepts_local_only_clone_behind_projects_symlink
