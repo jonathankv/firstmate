@@ -1,0 +1,17 @@
+(lab fixture: a crewmate ship branch fm/alpha-task with one commit, and the task record state/alpha-task.meta that fm-spawn would write; spawning a real crewmate inside the secondmate home is refused by the gate because that home is not a marked lab home)
+before landing: secondmate alpha main=38fd5a9  parent alpha main=38fd5a9
+$ FM_HOME=$SUB $SUB/bin/fm-merge-local.sh alpha-task
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  1 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  watcher supervision needs Stop-owned automatic recovery; inspect the hook registration and startup status before ending the turn.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+merged fm/alpha-task into local main (38fd5a9 -> 424ee5f) in /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design/projects/alpha
+exit=0
+after landing:  secondmate alpha main=424ee5f  parent alpha main=38fd5a9
+424ee5f alpha-task: restyle the button tokens
+38fd5a9 landed locally via fm-merge-local, never pushed
+bf53cd7 base
+(task record removed as the per-task teardown would do after landing)

@@ -1,0 +1,15 @@
+$ bin/fm-home-seed.sh design $SUB alpha   (fresh seed for the routing question; gamma is NOT seeded)
+Note: switching to 'b7b2e338db49a2ecf6d7e5a8ce5122ecff1f5f27'.
+
+changes and commit them, and you can discard any commits you make in this
+
+
+
+
+
+
+home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design
+exit=
+- ios - iOS work (host: fm-lab-nohost.invalid; root: /opt/fm; home: /opt/fm-home; scope: iOS app work; projects: beta; added 2026-09-29)
+- design - design system work for the alpha app and gamma parser UI (home: /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design; scope: design system work for the alpha app and delta tool; projects: alpha; added 2026-09-29)
+alpha

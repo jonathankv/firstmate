@@ -1,0 +1,52 @@
+$ FM_HOME=$LAB FM_SECONDMATE_CHARTER="design system work" bin/fm-home-seed.sh design $SUB alpha delta
+Note: switching to 'b7b2e338db49a2ecf6d7e5a8ce5122ecff1f5f27'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+scaffolded: /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.oZshFw/data/design/brief.md (secondmate charter)
+home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design
+exit=0
+
+--- parent registry data/secondmates.md
+- design - design system work for the alpha app and delta tool (home: /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design; scope: design system work for the alpha app and delta tool; projects: alpha, delta; added 2026-09-29)
+
+--- secondmate data/projects.md
+- alpha [local-only] - alpha design system app (added 2026-09-29)
+- delta [local-only] - remoteless local tool (added 2026-09-29)
+
+--- alpha clone in secondmate home
+checked out:  main
+main tip:     38fd5a91748a966095481113016ee92c12e0453b   (main home main tip: 38fd5a91748a966095481113016ee92c12e0453b; stale origin/main: bf53cd7ce78a07909349237576af4f6bcc112b44)
+origin url:   /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/alpha-origin.git
+origin/HEAD:  refs/remotes/origin/main
+local heads:  main 
+log main:
+38fd5a9 landed locally via fm-merge-local, never pushed
+bf53cd7 base
+
+--- delta clone (remoteless) in secondmate home
+checked out:  main
+remotes:      []
+main tip:     dd05a01ad983286a23ed1406e6af96fb7ff17c9e (main home: dd05a01ad983286a23ed1406e6af96fb7ff17c9e)
+
+--- markers
+.fm-secondmate-home
+.fm-secondmate-parent
+design
+
+--- gamma not seeded:
+alpha
+delta

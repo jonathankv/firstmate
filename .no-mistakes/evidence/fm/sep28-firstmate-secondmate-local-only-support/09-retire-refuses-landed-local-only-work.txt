@@ -1,0 +1,23 @@
+=== E. ordinary (non-forced) retirement while the secondmate home holds landed local-only work the parent lacks
+$ bin/fm-teardown.sh design
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.oZshFw
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  1 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  watcher supervision needs Stop-owned automatic recovery; inspect the hook registration and startup status before ending the turn.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+REFUSED: secondmate design still holds landed local-only work that the parent home /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.oZshFw does not have.
+project alpha: 1 commit(s) on main in /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design/projects/alpha are absent from the parent clone /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.oZshFw/projects/alpha
+Carry them back first: git -C /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design/projects/alpha bundle create /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-design-alpha.bundle main && git -C /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.oZshFw/projects/alpha fetch /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-design-alpha.bundle main:refs/heads/secondmate/design/main
+Land that work in the parent home's clone, or get the captain's explicit OK to discard, then --force.
+exit=1
+
+--- after refusal:
+home present:       yes
+parent meta:        present
+registry route:     1
+lab tmux windows:
+firstmate:0: primary* (1 panes) [200x50] 
+firstmate:1: fm-design (1 panes) [200x50] 

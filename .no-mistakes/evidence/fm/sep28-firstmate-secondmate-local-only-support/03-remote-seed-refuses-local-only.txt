@@ -1,0 +1,6 @@
+$ bin/fm-remote-home-seed.sh ios fm-lab-nohost.invalid /opt/fm /opt/fm-home alpha
+error: project alpha is local-only and cannot be provisioned remotely
+exit=1
+
+--- parent registry unchanged?
+unchanged

@@ -1,0 +1,35 @@
+=== G0. reseed with both clones current
+$ bin/fm-home-seed.sh design $SUB alpha delta
+home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design
+exit=0
+  secondmate alpha origin/HEAD=origin/main main=424ee5f; delta main=dd05a01; parent delta main=dd05a01
+  marker=design route=1 clones=alpha delta 
+
+=== G1. the secondmate alpha clone resolves its default branch to another branch (origin/HEAD -> origin/develop), although its main already contains the parent tip
+$ bin/fm-home-seed.sh design $SUB alpha delta
+error: seeded project alpha at /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design/projects/alpha resolves its default branch to 'develop' (origin/HEAD, else main, else master), not /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.oZshFw/projects/alpha's main, so a landing there would miss main; point it at main before seeding
+exit=1
+  secondmate alpha origin/HEAD=origin/develop main=424ee5f; delta main=dd05a01; parent delta main=dd05a01
+  marker=design route=1 clones=alpha delta 
+
+--- fix: point origin/HEAD back at main
+$ bin/fm-home-seed.sh design $SUB alpha delta
+home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design
+exit=0
+  secondmate alpha origin/HEAD=origin/main main=424ee5f; delta main=dd05a01; parent delta main=dd05a01
+  marker=design route=1 clones=alpha delta 
+
+=== G2. the parent lands a new delta commit, so the secondmate delta clone is behind
+$ bin/fm-home-seed.sh design $SUB alpha delta
+error: seeded project delta at /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design/projects/delta is behind /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.oZshFw/projects/delta: its main does not contain 68e174ed804059cac86ee26cde4d313753256225; bring it up to date with /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.oZshFw/projects/delta before seeding
+exit=1
+  secondmate alpha origin/HEAD=origin/main main=424ee5f; delta main=dd05a01; parent delta main=68e174e
+  marker=design route=1 clones=alpha delta 
+
+--- fix: fast-forward the secondmate delta clone from the parent clone path
+$ bin/fm-home-seed.sh design $SUB alpha delta
+home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design
+exit=0
+  secondmate alpha origin/HEAD=origin/main main=424ee5f; delta main=68e174e; parent delta main=68e174e
+  marker=design route=1 clones=alpha delta 
+

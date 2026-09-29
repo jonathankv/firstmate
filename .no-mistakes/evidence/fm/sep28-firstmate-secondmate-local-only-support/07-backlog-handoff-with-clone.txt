@@ -1,0 +1,28 @@
+=== C. local route: alpha-task to design, whose home holds the alpha clone
+$ bin/fm-backlog-handoff.sh design alpha-task
+handed off 1 item(s) to design: alpha-task
+  into /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design/data/backlog.md
+error: refusing fleet lifecycle from inside a no-mistakes gate worktree (/Users/jonathanvu/.no-mistakes/repos/38c446864270.git)
+error: backlog delivery to secondmate design succeeded, but its receiver wake failed; retry a tracked remote wake with --resume-pending or a later new handoff, and retry a local wake by rerunning its handoff
+exit=1
+--- main backlog:
+## In flight
+
+## Queued
+- [ ] beta-task - forge work (repo: beta)
+- [ ] gamma-task - fix the gamma parser (repo: gamma, priority: high)
+
+## Done
+--- secondmate backlog:
+## In flight
+
+## Queued
+- [ ] alpha-task - restyle the button tokens (repo: alpha)
+
+## Done
+
+=== D. control: remote route with only the direct-PR item passes the local-only check (it then reaches the transport)
+$ bin/fm-backlog-handoff.sh ios beta-task
+ssh: Could not resolve hostname fm-lab-nohost.invalid: nodename nor servname provided, or not known
+error: handoff transfer to ios was unavailable or completion is unknown; outbox preserved at /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.oZshFw/data/handoff/ios.outbox.md
+exit=1

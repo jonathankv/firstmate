@@ -1,0 +1,25 @@
+$ bin/fm-spawn.sh design "sleep 86400" --secondmate   (raw launch command instead of an LLM harness)
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.oZshFw
+warning: secondmate design sync skipped before launch: primary default-branch commit cannot be resolved
+spawned design harness=sleep kind=secondmate mode=secondmate yolo=off window=firstmate:fm-design worktree=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design
+exit=0
+
+--- lab tmux windows
+firstmate:0: primary* (1 panes) [200x50] 
+firstmate:1: fm-design (1 panes) [200x50] 
+
+--- parent state/design.meta
+window=firstmate:fm-design
+endpoint_task_id=design
+worktree=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design
+project=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design
+harness=sleep
+kind=secondmate
+mode=secondmate
+yolo=off
+tasktmp=/tmp/fm-design
+model=default
+effort=default
+spawn_gen=s1790645116.66991.25149
+home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design
+projects=alpha, delta

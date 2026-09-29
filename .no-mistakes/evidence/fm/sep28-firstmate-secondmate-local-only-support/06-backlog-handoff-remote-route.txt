@@ -1,0 +1,13 @@
+(lab fixture: a remote route line for "ios" was appended to data/secondmates.md; its host is an unresolvable alias, since no real remote host is available)
+- design - design system work for the alpha app and delta tool (home: /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design; scope: design system work for the alpha app and delta tool; projects: alpha, delta; added 2026-09-29)
+- ios - iOS work (host: fm-lab-nohost.invalid; root: /opt/fm; home: /opt/fm-home; scope: iOS app work; projects: beta; added 2026-09-29)
+
+=== B. remote route: batch with beta-task (direct-PR) + alpha-task (local-only)
+$ bin/fm-backlog-handoff.sh ios beta-task alpha-task
+error: refusing to hand off alpha-task: local-only project alpha cannot be cloned into remote secondmate ios; route it to a local secondmate holding its clone or keep the work in this home
+       nothing new was staged.
+exit=1
+--- main backlog byte-identical to before?
+unchanged: nothing moved
+--- handoff outbox:
+(no data/handoff directory: nothing staged)

@@ -1,0 +1,9 @@
+=== A. local route: batch with gamma-task (gamma clone NOT in the design home) + alpha-task
+$ bin/fm-backlog-handoff.sh design alpha-task gamma-task
+error: refusing to hand off gamma-task: local-only project gamma has no clone at /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design/projects/gamma; seed it into secondmate design first (bin/fm-home-seed.sh) or keep the work in this home
+       nothing was moved.
+exit=1
+--- main backlog byte-identical to before?
+unchanged: nothing moved
+--- secondmate backlog:
+(no secondmate backlog file)

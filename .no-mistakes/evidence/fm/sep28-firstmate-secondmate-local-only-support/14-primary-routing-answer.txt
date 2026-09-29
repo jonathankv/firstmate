@@ -1,0 +1,18 @@
+$ claude -p --permission-mode plan "<routing question>"   (real Claude CLI, normal login, cwd = gate worktree so AGENTS.md is the changed one, FM_HOME = lab home)
+
+--- question:
+Routing question only. Do not act: do not spawn, seed, hand off, send, or edit anything; only read files.
+Your firstmate home is FM_HOME=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.oZshFw (read /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.oZshFw/data/projects.md and /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.oZshFw/data/secondmates.md, and list /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design/projects).
+The captain asks: "Restyle the delta tool's settings screen" (project: delta).
+Following AGENTS.md, which home should this work go to, and why? What would your next step be? Answer in at most four sentences.
+
+--- lab state it could read: design home projects/ =
+alpha
+- ios - iOS work (host: fm-lab-nohost.invalid; root: /opt/fm; home: /opt/fm-home; scope: iOS app work; projects: beta; added 2026-09-29)
+- design - design system work for the alpha app and gamma parser UI (home: /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design; scope: design system work for the alpha app and delta tool; projects: alpha; added 2026-09-29)
+
+--- answer:
+Captain, this work belongs with the **design** second mate. Its home is on this machine, and its registered scope reads "design system work for the alpha app and delta tool". The routing rule goes by that scope field, not by the description line, which mentions the gamma parser UI instead. The iOS second mate doesn't fit because its scope is iOS app work and it runs on another machine, so it can never hold delta, which has no remote and lands only on this machine.
+
+It can't go to the design mate yet, though, because that home holds a local copy of alpha only, not delta. AGENTS.md sends a project like delta only to a local second mate that already holds its copy. My next step would be to load `secondmate-provisioning`, put a copy of delta into the design home, and then hand the restyle over through that skill so it lands on the design home's own backlog. If that setup is refused or blocked, the fallback is to do the restyle in the main home, and it would land there only after your approval.
+claude-exit=0

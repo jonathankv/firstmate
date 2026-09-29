@@ -1,0 +1,35 @@
+=== F1. the alpha entry is missing from the secondmate registry (hand-edited)
+--- secondmate data/projects.md now:
+- delta [local-only] - remoteless local tool (added 2026-09-29)
+$ bin/fm-teardown.sh design
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.oZshFw
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+warn: project "alpha" not in registry; defaulting to no-mistakes off
+REFUSED: project alpha in secondmate home /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design does not resolve to a registered delivery posture (see the parser message above); correct /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design/data/projects.md or explicitly discard with --force.
+exit=1
+home present: yes; parent meta: present; windows: primary fm-design 
+
+=== F2. the alpha entry carries a mistyped mode [locl-only]
+--- secondmate data/projects.md now:
+- alpha [locl-only] - alpha design system app (added 2026-09-29)
+- delta [local-only] - remoteless local tool (added 2026-09-29)
+$ bin/fm-teardown.sh design
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.oZshFw
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+warn: unknown mode "locl-only" for alpha; defaulting to no-mistakes off
+REFUSED: project alpha in secondmate home /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design does not resolve to a registered delivery posture (see the parser message above); correct /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design/data/projects.md or explicitly discard with --force.
+exit=1
+home present: yes; parent meta: present; windows: primary fm-design 
+
+=== F3. the secondmate registry file is gone
+--- secondmate data/projects.md now:
+(file absent)
+$ bin/fm-teardown.sh design
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.oZshFw
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+warn: no registry at /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design/data/projects.md; defaulting alpha to no-mistakes off
+REFUSED: project alpha in secondmate home /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design does not resolve to a registered delivery posture (see the parser message above); correct /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab-scratch.80H4BK/homes/design/data/projects.md or explicitly discard with --force.
+exit=1
+home present: yes; parent meta: present; windows: primary fm-design 
+
+(registry restored)
