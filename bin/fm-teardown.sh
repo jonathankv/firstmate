@@ -162,7 +162,8 @@
 # the parent home's clone does not have: nothing pushes landed local-only work
 # and fleet sync skips those clones, so that home may hold the only copy. The
 # refusal names each branch and commit count and prints a git bundle carry-back
-# into the parent clone. --force
+# into the parent clone. A project clone whose registered delivery posture
+# does not resolve in that home's registry is refused the same way. --force
 # is the approved discard path that prevalidates child removal targets, locks each
 # descendant home's task set before enumeration, and holds those locks through
 # child cleanup. Contention refuses the complete forced teardown before child
@@ -993,15 +994,25 @@ secondmate_unresolved_pending_replies_refuse() {
 }
 
 secondmate_landed_local_only_work_refuse() {  # <home>
-  local home=$1 parent_projects clone project mode_line mode default tip parent_clone objects count bundle where carry refused=0
+  local home=$1 parent_projects clone project mode_err mode_line mode default tip parent_clone objects count bundle where carry refused=0
   parent_projects="${FM_PROJECTS_OVERRIDE:-$FM_HOME/projects}"
   for clone in "$home"/projects/*/; do
     clone=${clone%/}
     [ -d "$clone" ] && [ ! -L "$clone" ] || continue
     [ "$(git -C "$clone" rev-parse --show-toplevel 2>/dev/null || true)" = "$(cd "$clone" && pwd -P)" ] || continue
     project=$(basename "$clone")
-    mode_line=$(FM_ROOT_OVERRIDE='' FM_STATE_OVERRIDE='' FM_DATA_OVERRIDE='' FM_PROJECTS_OVERRIDE='' FM_CONFIG_OVERRIDE='' FM_HOME="$home" "$SCRIPT_DIR/fm-project-mode.sh" "$project") || {
-      echo "REFUSED: project $project in secondmate home $home does not resolve to a delivery posture (see the refusal above); correct $home/data/projects.md or explicitly discard with --force." >&2
+    # The parser falls back to "no-mistakes off" with a "defaulting" warning for
+    # a missing registry, a missing entry, or an unknown mode. Skipping on that
+    # fallback could discard a local-only clone, so it refuses like a parser refusal.
+    mode_err=$(umask 077; mktemp "${TMPDIR:-/tmp}/fm-teardown-mode.XXXXXX") || return 1
+    mode_line=$(FM_ROOT_OVERRIDE='' FM_STATE_OVERRIDE='' FM_DATA_OVERRIDE='' FM_PROJECTS_OVERRIDE='' FM_CONFIG_OVERRIDE='' FM_HOME="$home" "$SCRIPT_DIR/fm-project-mode.sh" "$project" 2>"$mode_err") || mode_line=
+    cat "$mode_err" >&2
+    if grep -qF '; defaulting ' "$mode_err"; then
+      mode_line=
+    fi
+    rm -f -- "$mode_err"
+    [ -n "$mode_line" ] || {
+      echo "REFUSED: project $project in secondmate home $home does not resolve to a registered delivery posture (see the parser message above); correct $home/data/projects.md or explicitly discard with --force." >&2
       return 1
     }
     read -r mode _ <<EOF

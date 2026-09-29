@@ -16,8 +16,9 @@
 #       of truth; the source clone's origin, when it has one, is carried over
 #       with origin/HEAD on that branch, and a remoteless local-only project is
 #       accepted. A source with no local default branch is refused, and an
-#       existing local-only clone is accepted only when its default branch
-#       already contains the source clone's default tip.
+#       existing local-only clone is accepted only when it resolves that same
+#       default branch and that branch already contains the source clone's
+#       default tip.
 #       That project list is non-exclusive provisioning data. Pass --no-projects
 #       instead of a project list to seed a project-less home for a domain whose
 #       subject is the firstmate repo itself; it is mutually exclusive with a
@@ -439,8 +440,13 @@ clone_local_only_project() {
 }
 
 seeded_local_only_clone_current() {
-  local project=$1 src=$2 dst=$3 default src_tip
+  local project=$1 src=$2 dst=$3 default dst_default src_tip
   default=$(local_only_source_default "$project" "$src") || return 1
+  dst_default=$(clone_default_branch "$dst" || true)
+  [ "$dst_default" = "$default" ] || {
+    echo "error: seeded project $project at $dst resolves its default branch to '${dst_default:-none}' (origin/HEAD, else main, else master), not $src's $default, so a landing there would miss $default; point it at $default before seeding" >&2
+    return 1
+  }
   src_tip=$(git -C "$src" rev-parse --verify --quiet "refs/heads/$default^{commit}")
   git -C "$dst" merge-base --is-ancestor "$src_tip" "refs/heads/$default" 2>/dev/null || {
     echo "error: seeded project $project at $dst is behind $src: its $default does not contain $src_tip; bring it up to date with $src before seeding" >&2

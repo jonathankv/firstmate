@@ -981,6 +981,40 @@ test_home_seed_refuses_stale_existing_local_only_clone() {
   pass "home seeding refuses an existing local-only clone until it contains the main home's default tip"
 }
 
+# bin/fm-merge-local.sh lands on the clone's default branch as it resolves it
+# (origin/HEAD, else main, else master), so an existing local-only clone whose
+# origin/HEAD names another branch would take approved work there even though
+# its main already contains the main home's tip.
+test_home_seed_refuses_existing_local_only_clone_on_another_default() {
+  local home subhome subhome_abs err
+  home="$TMP_ROOT/off-default-local-only-home"
+  subhome="$TMP_ROOT/off-default-local-only-subhome"
+  err="$TMP_ROOT/off-default-local-only.err"
+  mkdir -p "$home/projects" "$home/data" "$home/state"
+  fm_git_init_commit "$home/projects/alpha"
+  git -C "$home/projects/alpha" branch hotfix
+  git clone --quiet "$ROOT" "$subhome"
+  subhome_abs=$(cd "$subhome" && pwd -P)
+  mkdir -p "$subhome/projects"
+  git clone --quiet "$home/projects/alpha" "$subhome/projects/alpha"
+  git -C "$subhome/projects/alpha" remote set-head origin hotfix
+  printf '%s\n' '- alpha [local-only] - alpha project (added 2026-06-22)' > "$home/data/projects.md"
+  scaffold_secondmate_charter "$home" design 'design domain' alpha || fail "charter scaffold failed for off-default local-only seed test"
+
+  if FM_HOME="$home" "$ROOT/bin/fm-home-seed.sh" design "$subhome" alpha >/dev/null 2>"$err"; then
+    fail "seed accepted an existing local-only clone whose origin/HEAD names another branch"
+  fi
+  grep -F "seeded project alpha at $subhome_abs/projects/alpha resolves its default branch to 'hotfix'" "$err" >/dev/null \
+    || fail "seed did not explain the off-default local-only clone refusal: $(cat "$err")"
+  [ ! -e "$subhome/.fm-secondmate-home" ] || fail "off-default local-only refusal left a subhome marker"
+
+  git -C "$subhome/projects/alpha" remote set-head origin main
+  FM_HOME="$home" "$ROOT/bin/fm-home-seed.sh" design "$subhome" alpha >/dev/null 2>"$err" \
+    || fail "seed refused the local-only clone after its origin/HEAD named main: $(cat "$err")"
+  [ -f "$subhome/.fm-secondmate-home" ] || fail "seed did not complete after the local-only clone named main"
+  pass "home seeding refuses an existing local-only clone whose default branch is not the main home's"
+}
+
 # A registry entry whose forge token the parser cannot resolve yields no posture
 # at all. Reading that refusal as an empty mode would walk straight past the
 # delivery-mode check above and clone the project into a secondmate home,
@@ -2099,6 +2133,46 @@ test_secondmate_teardown_refuses_unlanded_local_only_clone() {
   pass "secondmate teardown refuses to discard landed local-only work until the parent clone holds it"
 }
 
+# The registry parser falls back to "no-mistakes off" for a missing entry or an
+# unknown mode. Normal retirement must not read that fallback as a remote-backed
+# posture and remove a clone that may hold the only copy of landed work.
+test_secondmate_teardown_refuses_clone_without_registered_posture() {
+  local home subhome fakebin log err entry
+  home="$TMP_ROOT/unregistered-teardown-home"
+  subhome="$TMP_ROOT/unregistered-teardown-subhome"
+  err="$TMP_ROOT/unregistered-teardown.err"
+  mkdir -p "$home/state" "$home/data" "$home/projects" "$subhome/state" "$subhome/data" "$subhome/projects"
+  mark_firstmate_home "$subhome"
+  printf 'domain\n' > "$subhome/.fm-secondmate-home"
+  fm_git_init_commit "$home/projects/alpha"
+  git clone --quiet "$home/projects/alpha" "$subhome/projects/alpha"
+  printf '%s\n' '- alpha [local-only] - alpha project (added 2026-06-22)' > "$home/data/projects.md"
+  printf 'landed\n' > "$subhome/projects/alpha/landed.txt"
+  git -C "$subhome/projects/alpha" add landed.txt
+  git -C "$subhome/projects/alpha" -c user.name='Firstmate Tests' -c user.email='tests@example.invalid' \
+    commit -qm 'landed in the secondmate home'
+  fm_write_secondmate_meta "$home/state/domain.meta" "$subhome"
+  printf '%s\n' '- domain - design domain (home: '"$subhome"'; scope: design domain; projects: alpha; added 2026-06-22)' > "$home/data/secondmates.md"
+  fakebin=$(make_fake_tmux "$TMP_ROOT/unregistered-teardown-fake")
+  log="$TMP_ROOT/unregistered-teardown-fake/tmux.log"
+
+  for entry in '- beta [local-only] - another project (added 2026-06-22)' \
+    '- alpha [locl-only] - alpha project (added 2026-06-22)'; do
+    printf '%s\n' "$entry" > "$subhome/data/projects.md"
+    if PATH="$fakebin:$PATH" FM_HOME="$home" FM_FAKE_TMUX_LOG="$log" \
+        FM_FAKE_TMUX_CAPTURE="$TMP_ROOT/unregistered-teardown-fake/pane.txt" TMPDIR="$TMP_ROOT" \
+        "$ROOT/bin/fm-teardown.sh" domain >/dev/null 2>"$err"; then
+      fail "teardown retired a secondmate home whose clone has no registered posture ($entry)"
+    fi
+    grep -F 'project alpha in secondmate home' "$err" | grep -F 'does not resolve to a registered delivery posture' >/dev/null \
+      || fail "teardown did not explain the unresolved-posture refusal ($entry): $(cat "$err")"
+    [ -d "$subhome/projects/alpha/.git" ] || fail "the refused retirement removed the secondmate home ($entry)"
+    [ -e "$home/state/domain.meta" ] || fail "the refused retirement removed the secondmate record ($entry)"
+    grep -F 'kill-window' "$log" >/dev/null && fail "the refused retirement killed the secondmate endpoint ($entry)"
+  done
+  pass "secondmate teardown refuses a project clone whose registered posture does not resolve"
+}
+
 test_secondmate_force_teardown_discards_child_work() {
   local home subhome childproj childwt fakebin log
   home="$TMP_ROOT/force-teardown-home"
@@ -3195,6 +3269,7 @@ test_home_seed_refuses_missing_projects_without_signal
 test_home_seed_accepts_local_only_project
 test_home_seed_accepts_remoteless_local_only_project
 test_home_seed_refuses_stale_existing_local_only_clone
+test_home_seed_refuses_existing_local_only_clone_on_another_default
 test_home_seed_refuses_an_unresolvable_registry_posture
 test_home_seed_refuses_registry_delimiter_home
 test_home_seed_refuses_active_home_and_root
@@ -3225,6 +3300,7 @@ test_secondmate_force_teardown_preserves_nested_restore_status
 test_secondmate_teardown_refuses_failed_leased_home_return
 test_secondmate_teardown_removes_plain_clone_home_without_treehouse_return
 test_secondmate_teardown_refuses_unlanded_local_only_clone
+test_secondmate_teardown_refuses_clone_without_registered_posture
 test_secondmate_force_teardown_discards_child_work
 test_secondmate_force_teardown_refuses_duplicated_child_slot
 test_secondmate_force_teardown_preserves_child_on_unproven_lock
