@@ -16,10 +16,10 @@
 # docs/herdr-backend.md "Default task container shape"): ONE herdr workspace PER
 # FIRSTMATE HOME (the primary, and each secondmate, gets its own), ONE herdr TAB
 # per task inside its home's workspace. The default-on presentation projection
-# creates a disposable workspace for a clean fresh task instead unless the home
-# opts out. That
-# workspace is a non-authoritative visual projection containing only the normal
-# task pane. Its random token and mutable label never authorize lookup,
+# creates a disposable workspace for an eligible crewmate or scout instead
+# unless the home opts out (docs/herdr-backend.md "Presentation journal" owns
+# which launches qualify). That workspace is a non-authoritative visual
+# projection containing only the normal task pane. Its random token and mutable label never authorize lookup,
 # adoption, reuse, closure, deletion, task ownership, or endpoint selection.
 # A version 2 journal can participate in replacing only its exact same-identity
 # endpoint after metadata, home, session, workspace, tab, pane, parent, shape,
