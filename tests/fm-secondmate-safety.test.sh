@@ -3301,6 +3301,34 @@ EOF
   pass "fm-backlog-handoff refuses a local-only item for a home without its clone"
 }
 
+test_backlog_handoff_accepts_local_only_clone_behind_projects_symlink() {
+  local home subhome subhome_abs out
+  home="$TMP_ROOT/handoff-local-only-symlink-main"
+  subhome="$TMP_ROOT/handoff-local-only-symlink-sub"
+  mkdir -p "$home/data" "$home/state"
+  seed_secondmate_home_marker "$subhome" design
+  subhome_abs=$(cd "$subhome" && pwd -P)
+  # projects/ is a symlink to a directory inside the home, a layout seeding allows.
+  mkdir -p "$subhome/project-store"
+  ln -s project-store "$subhome/projects"
+  fm_git_init_commit "$subhome/project-store/alpha"
+  printf -- '- design - feature work (home: %s; scope: feature work; projects: alpha; added 2026-06-22)\n' "$subhome_abs" > "$home/data/secondmates.md"
+  printf -- '- alpha [local-only] - local project (added 2026-06-22)\n' > "$home/data/projects.md"
+  cat > "$home/data/backlog.md" <<'EOF'
+## In flight
+
+## Queued
+- [ ] alpha-task - local work (repo: alpha)
+
+## Done
+EOF
+
+  out=$(FM_HOME="$home" "$ROOT/bin/fm-backlog-handoff.sh" design alpha-task 2>&1) || true
+  printf '%s\n' "$out" | grep -F 'has no clone' >/dev/null \
+    && fail "handoff refused a local-only clone reached through a projects/ symlink inside the home: $out"
+  pass "fm-backlog-handoff accepts a local-only clone behind a projects/ symlink inside the home"
+}
+
 test_fm_home_parameterization
 test_lock_status_is_per_home
 test_seed_allows_overlapping_clones_and_drops_owner
@@ -3386,3 +3414,4 @@ test_secondmate_charter_brief_is_idle_by_default
 test_backlog_handoff_aborts_safely
 test_backlog_handoff_refuses_done_items_and_non_secondmate_homes
 test_backlog_handoff_refuses_local_only_item_without_clone
+test_backlog_handoff_accepts_local_only_clone_behind_projects_symlink
