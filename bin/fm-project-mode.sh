@@ -19,7 +19,9 @@
 # bin/fm-home-seed.sh (clone a local-only project from the local source clone,
 # run no-mistakes init), bin/fm-remote-home-seed.sh (refuse local-only seeding,
 # run no-mistakes init), bin/fm-backlog-handoff.sh (refuse a local-only item for a
-# home without its clone), bin/fm-spawn.sh's advisory registry-deviation notice,
+# home without its clone), bin/fm-teardown.sh (refuse retiring a secondmate home
+# whose local-only clone holds unlanded work or whose clone's posture does not
+# resolve), bin/fm-spawn.sh's advisory registry-deviation notice,
 # and --forge for bin/fm-spawn.sh's forge agreement and yolo refusal and for
 # bin/fm-promote.sh, which takes the forge binding from here because it is a
 # project fact rather than a task choice.

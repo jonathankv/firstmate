@@ -686,7 +686,7 @@ A preexisting project-bearing charter is also refused until it is re-scaffolded 
 
 The lease is held under the secondmate id until explicit retirement or seed rollback returns it, so normal restarts do not free or recycle the home.
 Teardown of a leased home fails closed if `treehouse return` cannot release the lease; plain-clone homes with no treehouse pool slot are removed directly.
-Non-forced retirement refuses while a `local-only` clone in the home holds default-branch commits that the main home's clone lacks, naming the branch and count and printing a `git bundle` carry-back to run first.
+Non-forced retirement refuses while the home may hold the only copy of landed `local-only` work, either default-branch commits the main home's clone lacks or a clone whose delivery posture does not resolve in the home's registry; the [teardown header](../bin/fm-teardown.sh) owns those refusals and the `git bundle` carry-back to run first.
 
 ### Project modes and backlog handoff
 
