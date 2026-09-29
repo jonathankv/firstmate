@@ -323,16 +323,17 @@ fm_backend_herdr_presentation_default_supported() {  # <state-dir> [<session>]
   return 1
 }
 
-# fm_backend_herdr_presentation_enabled <config-dir> [<state-dir>]: the one gate
-# bin/fm-spawn.sh consults before projecting this home's children into
-# disposable one-task workspaces (docs/herdr-backend.md "Presentation spaces"
-# owns the full contract). An explicit "off" or "on" is obeyed as written; a
-# home that configured nothing is projected only at or above the version floor,
-# and otherwise falls back to the flat layout with one warning. Sets
+# fm_backend_herdr_presentation_enabled <config-dir> [<state-dir>] [<session>]:
+# the one gate bin/fm-spawn.sh consults before projecting this home's children
+# into disposable one-task workspaces (docs/herdr-backend.md "Presentation
+# spaces" owns the full contract). An explicit "off" or "on" is obeyed as
+# written; a home that configured nothing is projected only at or above the
+# version floor, and otherwise falls back to the flat layout with one warning.
+# The floor reads <session> when given, else the ambient session. Sets
 # FM_BACKEND_HERDR_PRESENTATION_PREFERENCE for the new-projection boundary to
 # distinguish an unconfigured default from an explicit opt-in.
-fm_backend_herdr_presentation_enabled() {  # <config-dir> [<state-dir>]
-  local config_dir=${1:-} state_dir=${2:-} preference
+fm_backend_herdr_presentation_enabled() {  # <config-dir> [<state-dir>] [<session>]
+  local config_dir=${1:-} state_dir=${2:-} session=${3:-} preference
   preference=$(fm_backend_herdr_presentation_preference "$config_dir")
   # bin/fm-spawn.sh reads this out-parameter after sourcing this adapter.
   # shellcheck disable=SC2034
@@ -341,7 +342,7 @@ fm_backend_herdr_presentation_enabled() {  # <config-dir> [<state-dir>]
     off) return 1 ;;
     on) return 0 ;;
   esac
-  fm_backend_herdr_presentation_default_supported "$state_dir"
+  fm_backend_herdr_presentation_default_supported "$state_dir" "$session"
 }
 
 # fm_backend_herdr_workspace_label: the per-firstmate-HOME herdr workspace
