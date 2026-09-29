@@ -1,0 +1,53 @@
+
+===== control: a direct-PR-only handoff to 'design' hits the same gate wake refusal (independent of local-only) =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-backlog-handoff.sh design beta-lint
+error: no-mistakes gate agent must not drive the fleet (NO_MISTAKES_GATE set)
+error: backlog delivery to secondmate design succeeded, but its receiver wake failed; retry a tracked remote wake with --resume-pending or a later new handoff, and retry a local wake by rerunning its handoff
+error: previous receiver wake for secondmate design is unresolved; nothing new was moved
+[exit 1]
+$ cat /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-home/data/backlog.md
+## In flight
+
+## Queued
+- [ ] alpha-tokens - add spacing tokens to the design system (repo: alpha, priority: high)
+- [ ] beta-docs - document the beta API (repo: beta)
+
+## Done
+[exit 0]
+
+===== S5d secondmate 'research' whose projects/ directory is a symlink to project-store/ inside its home =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-home-seed.sh research /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/research-home alpha
+scaffolded: /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/data/research/brief.md (secondmate charter)
+home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/research-home
+[exit 0]
+$ ls -l /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/research-home/projects /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/research-home/project-store
+lrwxr-xr-x@ 1 jonathanvu  staff  13 Sep 29 14:13 /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/research-home/projects -> project-store
+
+/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/research-home/project-store:
+total 0
+drwxr-xr-x@ 6 jonathanvu  staff  192 Sep 29 14:13 alpha
+[exit 0]
+research alpha tip 59b3616 (main home main 59b3616)
+
+===== S5d hand the local-only alpha-icons item to 'research': the guard accepts it and the item moves =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-backlog-handoff.sh research alpha-icons
+handed off 1 item(s) to research: alpha-icons
+  into /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/research-home/data/backlog.md
+error: handed off work to secondmate research, but no live receiver endpoint is recorded; the destination backlog is durable and the receiver was not woken
+[exit 1]
+$ cat /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/research-home/data/backlog.md
+## In flight
+
+## Queued
+- [ ] alpha-icons - icon refresh (repo: alpha)
+
+## Done
+[exit 0]
+$ cat /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/data/backlog.md
+## In flight
+
+## Queued
+- [ ] epsilon-fix - fix epsilon startup (repo: epsilon)
+- [ ] beta-lint - tidy beta lint (repo: beta)
+## Done
+[exit 0]

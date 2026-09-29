@@ -1,0 +1,102 @@
+
+===== S1 seed local secondmate 'design' with local-only alpha, remoteless local-only gamma, direct-PR beta =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-home-seed.sh design /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-home alpha gamma beta
+Note: switching to 'c868a6417ddac5f8b66e1abfedb8b28411c3899b'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+scaffolded: /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/data/design/brief.md (secondmate charter)
+home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home
+[exit 0]
+
+===== registry route written in the main home =====
+$ cat /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/data/secondmates.md
+- design - Design system work for alpha, gamma and beta (home: /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home; scope: Design system work for alpha, gamma and beta; projects: alpha, gamma, beta; added 2026-09-29)
+[exit 0]
+
+===== secondmate home layout =====
+$ ls -a /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-home
+.
+..
+.agents
+.claude
+.codex
+.cursor
+.fm-secondmate-home
+.fm-secondmate-parent
+.git
+.gitattributes
+.github
+.gitignore
+.greptile
+.grok
+.no-mistakes.yaml
+.omp
+.opencode
+.pi
+.tasks.toml
+AGENTS.md
+CLAUDE.md
+CONTRIBUTING.md
+GROK_BOT.md
+LICENSE
+README.md
+VISION.md
+assets
+bin
+config
+data
+docs
+projects
+skills
+state
+tests
+[exit 0]
+$ cat /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-home/.fm-secondmate-home
+design
+[exit 0]
+$ cat /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-home/data/projects.md
+- alpha [local-only] - alpha design system (added 2026-09-29)
+- gamma [local-only] - remoteless notes (added 2026-09-29)
+- beta [direct-PR] - forge-backed project (added 2026-09-29)
+[exit 0]
+
+===== alpha clone in the secondmate home =====
+checked-out branch: main
+main tip:           16d9e52  (main home local main: 16d9e52, stale origin main: 3d85d4b)
+origin url:         /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/remotes/alpha.git
+origin/HEAD:        refs/remotes/origin/main
+hotfix-only file present? no
+$ git -C /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-home/projects/alpha log --oneline main
+16d9e52 alpha: landed by fm-merge-local, never pushed
+3d85d4b alpha: initial
+[exit 0]
+
+===== gamma (remoteless local-only) clone =====
+checked-out branch: main, tip 9b0e869 (source 9b0e869)
+remotes: []
+
+===== beta (direct-PR) clone =====
+origin url: /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/remotes/beta.git
+
+===== validate the registry =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-home-seed.sh validate
+[exit 0]
+
+===== reseeding an up-to-date home is idempotent =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-home-seed.sh design /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-home alpha gamma beta
+home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home
+[exit 0]

@@ -1,0 +1,23 @@
+
+===== main lab home: FM_HOME=/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main, gate context NO_MISTAKES_GATE=1 =====
+$ cat /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/data/projects.md
+- alpha [local-only] - alpha design system (added 2026-09-29)
+- gamma [local-only] - remoteless notes (added 2026-09-29)
+- beta [direct-PR] - forge-backed project (added 2026-09-29)
+- epsilon [local-only] - local project no secondmate holds (added 2026-09-29)
+[exit 0]
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-project-mode.sh alpha
+local-only off
+[exit 0]
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-project-mode.sh gamma
+local-only off
+[exit 0]
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-project-mode.sh beta
+direct-PR off
+[exit 0]
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-project-mode.sh epsilon
+local-only off
+[exit 0]
+alpha main tip (local, unpushed): 16d9e52
+alpha origin/main tip (stale):     3d85d4b
+alpha checked-out branch in main:  hotfix

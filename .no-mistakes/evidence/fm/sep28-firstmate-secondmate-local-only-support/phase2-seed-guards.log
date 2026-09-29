@@ -1,0 +1,47 @@
+
+===== S2a main home lands a new alpha commit; reseeding the now-behind secondmate clone must refuse =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-home-seed.sh design /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-home alpha gamma beta
+error: seeded project alpha at /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home/projects/alpha is behind /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/alpha: its main does not contain 59b3616084d37938532d955cadd59d5dd677b346; bring it up to date with /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/alpha before seeding
+[exit 1]
+state check: secondmate clone refs, marker and registry unchanged by the refusal
+
+===== S2a after the secondmate clone catches up with the main home, reseeding succeeds =====
+$ git -C /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-home/projects/alpha pull -q --ff-only /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/alpha main
+[exit 0]
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-home-seed.sh design /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-home alpha gamma beta
+home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home
+[exit 0]
+
+===== S2b the secondmate clone's origin/HEAD names another branch (hotfix); reseeding must refuse =====
+$ git -C /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-home/projects/alpha remote set-head origin hotfix
+[exit 0]
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-home-seed.sh design /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-home alpha gamma beta
+error: seeded project alpha at /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home/projects/alpha resolves its default branch to 'hotfix' (origin/HEAD, else main, else master), not /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/alpha's main, so a landing there would miss main; point it at main before seeding
+[exit 1]
+
+===== S2b pointing origin/HEAD back at main lets the reseed through =====
+$ git -C /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-home/projects/alpha remote set-head origin main
+[exit 0]
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-home-seed.sh design /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-home alpha gamma beta
+home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home
+[exit 0]
+
+===== S2c a local-only source with no origin/HEAD, main, or master is refused, and no home is created =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-home-seed.sh zeta-mate /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/zeta-home zeta
+error: cannot determine default branch for project zeta at /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/zeta; expected origin/HEAD, main, or master
+[exit 1]
+zeta-home exists after refusal? no
+registry unchanged by the refusal
+
+===== S2d an unknown delivery mode in the registry does not seed as local-only =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-home-seed.sh eta-mate /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/eta-home eta
+refused: unknown forge "githb" registered for eta in /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/data/projects.md; the accepted value is forge=gerrit, or no forge token at all for a forge whose pull requests no-mistakes already drives; correct the registry entry
+error: project eta does not resolve to a delivery posture (see the refusal above); correct /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/data/projects.md
+[exit 1]
+eta-home exists after refusal? no
+
+===== S3 a remote secondmate route still refuses a local-only project before touching any host =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-remote-home-seed.sh ios-remote lab-unreachable-host /opt/fm-root /opt/fm-home alpha
+error: project alpha is local-only and cannot be provisioned remotely
+[exit 1]
+registry unchanged by the remote refusal

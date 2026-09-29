@@ -1,0 +1,109 @@
+
+===== seed secondmate 'ops' with local-only alpha and remoteless local-only gamma =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-home-seed.sh ops /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/ops-home alpha gamma
+Note: switching to 'c868a6417ddac5f8b66e1abfedb8b28411c3899b'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+scaffolded: /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/data/ops/brief.md (secondmate charter)
+home=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/ops-home
+[exit 0]
+lab tmux windows: fm-design fm-ops 
+
+===== S8 ops' registry loses gamma's entry: ordinary retirement refuses because gamma's posture no longer resolves =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-teardown.sh ops
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  2 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  watcher supervision needs Stop-owned automatic recovery; inspect the hook registration and startup status before ending the turn.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+warn: project "gamma" not in registry; defaulting to no-mistakes off
+REFUSED: project gamma in secondmate home /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/ops-home does not resolve to a registered delivery posture (see the parser message above); correct /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/ops-home/data/projects.md or explicitly discard with --force.
+[exit 1]
+after refusal: home present=yes meta present=yes route present=yes window alive=yes
+
+===== S8 ops' registry misspells gamma's mode as locl-only: refused the same way =====
+$ grep ^- gamma /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/ops-home/data/projects.md
+- gamma [locl-only] - remoteless notes (added 2026-09-29)
+[exit 0]
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-teardown.sh ops
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+warn: unknown mode "locl-only" for gamma; defaulting to no-mistakes off
+REFUSED: project gamma in secondmate home /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/ops-home does not resolve to a registered delivery posture (see the parser message above); correct /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/ops-home/data/projects.md or explicitly discard with --force.
+[exit 1]
+
+===== S6 a crewmate's ship branch for alpha lands inside the ops home through the secondmate's own bin/fm-merge-local.sh =====
+ops alpha main before: 59b3616
+$ /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/ops-home/bin/fm-merge-local.sh ops-alpha-spacing
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  1 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  watcher supervision needs Stop-owned automatic recovery; inspect the hook registration and startup status before ending the turn.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+merged fm/ops-alpha-spacing into local main (59b3616 -> 9ba8028) in /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/ops-home/projects/alpha
+[exit 0]
+ops alpha main after:  9ba8028 ; main home alpha main: 59b3616
+
+===== S7 ordinary retirement of 'ops' refuses: its local-only clones hold the only copy of landed work =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-teardown.sh ops
+[exit 1]
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+REFUSED: secondmate ops still holds landed local-only work that the parent home /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main does not have.
+project alpha: 2 commit(s) on main in /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/ops-home/projects/alpha are absent from the parent clone /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/alpha
+Carry them back first: git -C /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/ops-home/projects/alpha bundle create /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-ops-alpha.bundle main && git -C /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/alpha fetch /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-ops-alpha.bundle main:refs/heads/secondmate/ops/main
+project gamma: 1 commit(s) on main in /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/ops-home/projects/gamma are absent from the parent clone /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/gamma
+Carry them back first: git -C /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/ops-home/projects/gamma bundle create /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-ops-gamma.bundle main && git -C /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/gamma fetch /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-ops-gamma.bundle main:refs/heads/secondmate/ops/main
+Land that work in the parent home's clone, or get the captain's explicit OK to discard, then --force.
+after refusal: home present=yes meta present=yes route present=yes window alive=yes
+
+===== S7 the captain runs each printed carry-back =====
+$ git -C /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/ops-home/projects/alpha bundle create /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-ops-alpha.bundle main && git -C /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/alpha fetch /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-ops-alpha.bundle main:refs/heads/secondmate/ops/main
+From /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-ops-alpha.bundle
+ * [new branch]      main       -> secondmate/ops/main
+[exit 0]
+$ git -C /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/ops-home/projects/gamma bundle create /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-ops-gamma.bundle main && git -C /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/gamma fetch /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-ops-gamma.bundle main:refs/heads/secondmate/ops/main
+From /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-ops-gamma.bundle
+ * [new branch]      main       -> secondmate/ops/main
+[exit 0]
+$ git -C /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/alpha log --oneline -3 secondmate/ops/main
+9ba8028 alpha: icon refresh (landed in the ops secondmate home)
+65e54ca alpha: spacing tokens (landed in the ops secondmate home)
+59b3616 alpha: second local landing in the main home
+[exit 0]
+$ git -C /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/gamma log --oneline -3 secondmate/ops/main
+41a2076 gamma: landed in the ops secondmate home
+9b0e869 gamma: initial
+[exit 0]
+
+===== S7 retirement now succeeds and removes the home, the route, the record, and the endpoint =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-teardown.sh ops
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+teardown ops complete (window firstmate:fm-ops, worktree /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/ops-home)
+[exit 0]
+after retirement: home present=no meta present=no route present=no window alive=no
+$ cat /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/data/secondmates.md
+- design - Design system work for alpha, gamma and beta (home: /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home; scope: Design system work for alpha, gamma and beta; projects: alpha, gamma, beta; added 2026-09-29)
+- ios - iOS work (host: lab-unreachable-host; root: /opt/fm-root; home: /opt/fm-home; scope: iOS work; projects: alpha; added 2026-09-29)
+- research - Research on alpha icons (home: /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/research-home; scope: Research on alpha icons; projects: alpha; added 2026-09-29)
+[exit 0]

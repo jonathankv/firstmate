@@ -1,0 +1,91 @@
+$ cat /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/data/secondmates.md
+- design - Design system work for alpha, gamma and beta (home: /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home; scope: Design system work for alpha, gamma and beta; projects: alpha, gamma, beta; added 2026-09-29)
+- ios - iOS work (host: lab-unreachable-host; root: /opt/fm-root; home: /opt/fm-home; scope: iOS work; projects: alpha; added 2026-09-29)
+[exit 0]
+$ cat /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/data/backlog.md
+## In flight
+
+## Queued
+- [ ] alpha-tokens - add spacing tokens to the design system (repo: alpha, priority: high)
+- [ ] beta-docs - document the beta API (repo: beta)
+- [ ] epsilon-fix - fix epsilon startup (repo: epsilon)
+- [ ] beta-lint - tidy beta lint (repo: beta)
+- [ ] alpha-icons - icon refresh (repo: alpha)
+
+## Done
+[exit 0]
+
+===== S5a local-only epsilon item bound for 'design', whose home holds no epsilon clone, batched with a direct-PR item: refused, nothing moves =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-backlog-handoff.sh design beta-lint epsilon-fix
+error: refusing to hand off epsilon-fix: local-only project epsilon has no clone at /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home/projects/epsilon; seed it into secondmate design first (bin/fm-home-seed.sh) or keep the work in this home
+       nothing was moved.
+[exit 1]
+main backlog unchanged
+secondmate backlog exists? no
+
+===== S5b local-only alpha item bound for the remote route 'ios': refused before staging =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-backlog-handoff.sh ios beta-lint alpha-icons
+error: refusing to hand off alpha-icons: local-only project alpha cannot be cloned into remote secondmate ios; route it to a local secondmate holding its clone or keep the work in this home
+       nothing new was staged.
+[exit 1]
+main backlog unchanged
+outbox for ios exists? no
+
+===== S5c 'design' holds epsilon only through a symlinked projects/epsilon entry (clone elsewhere inside the home): refused =====
+$ ls -l /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-home/projects/
+total 0
+drwxr-xr-x@ 6 jonathanvu  staff  192 Sep 29 14:12 alpha
+drwxr-xr-x@ 4 jonathanvu  staff  128 Sep 29 14:11 beta
+lrwxr-xr-x@ 1 jonathanvu  staff  104 Sep 29 14:12 epsilon -> /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home/project-store/epsilon
+drwxr-xr-x@ 4 jonathanvu  staff  128 Sep 29 14:11 gamma
+[exit 0]
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-backlog-handoff.sh design epsilon-fix
+error: refusing to hand off epsilon-fix: local-only project epsilon has no clone at /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home/projects/epsilon; seed it into secondmate design first (bin/fm-home-seed.sh) or keep the work in this home
+       nothing was moved.
+[exit 1]
+
+===== S5c same, with projects/epsilon symlinked to a clone outside the home: refused =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-backlog-handoff.sh design epsilon-fix
+error: refusing to hand off epsilon-fix: local-only project epsilon has no clone at /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home/projects/epsilon; seed it into secondmate design first (bin/fm-home-seed.sh) or keep the work in this home
+       nothing was moved.
+[exit 1]
+main backlog unchanged after both symlink refusals
+
+===== S4 local-only alpha item and direct-PR beta item handed off to 'design', whose home holds alpha's clone: moved and the secondmate woken =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-backlog-handoff.sh design alpha-tokens beta-docs
+handed off 2 item(s) to design: alpha-tokens beta-docs
+  into /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home/data/backlog.md
+error: no-mistakes gate agent must not drive the fleet (NO_MISTAKES_GATE set)
+error: backlog delivery to secondmate design succeeded, but its receiver wake failed; retry a tracked remote wake with --resume-pending or a later new handoff, and retry a local wake by rerunning its handoff
+[exit 1]
+
+===== main backlog after the move =====
+$ cat /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/data/backlog.md
+## In flight
+
+## Queued
+- [ ] epsilon-fix - fix epsilon startup (repo: epsilon)
+- [ ] beta-lint - tidy beta lint (repo: beta)
+- [ ] alpha-icons - icon refresh (repo: alpha)
+
+## Done
+[exit 0]
+
+===== secondmate 'design' backlog after the move =====
+$ cat /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-home/data/backlog.md
+## In flight
+
+## Queued
+- [ ] alpha-tokens - add spacing tokens to the design system (repo: alpha, priority: high)
+- [ ] beta-docs - document the beta API (repo: beta)
+
+## Done
+[exit 0]
+
+===== wake text the secondmate pane received =====
+$ cat /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-received.log
+cat: /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/design-received.log: No such file or directory
+[exit 1]
+
+===== live pane capture (lab tmux server) =====
+❯

@@ -1,24 +1,18 @@
-# Live validation: let a secondmate home hold a `local-only` project
+# Live validation: secondmate homes holding local-only projects
 
-Branch `fm/sep28-firstmate-secondmate-local-only-support`, base 6b0f5a0, target ca40017.
-Every live scenario ran against a disposable lab home minted with `bin/fm-lab-home.sh create`
-(marker allowance, gate env `NO_MISTAKES_GATE=1` left in place) and a private tmux server on
-`tmux -L fm-lab` under the lab's `tmux/` socket dir. The default tmux server, the real fleet
-home, and the primary checkout were never addressed; the lab was removed in the same turn.
+I drove the real firstmate CLI scripts from the gate worktree against a disposable lab
+home (`bin/fm-lab-home.sh create`) with the gate marker `NO_MISTAKES_GATE=1` still set.
+A private lab tmux server (`bin/fm-lab-home.sh tmux-dir`) hosted the secondmate endpoints,
+and real git clones served as projects and origins. Each phase script is next to its log.
 
-| Scenario | Result | Evidence |
+| Scenario | Script | Log |
 |---|---|---|
-| Four new automated tests (seed accepts local-only with origin, remoteless, refuses stale clone; teardown refuses unlanded work) | pass | `automated-tests-local-only.log` |
-| S1 seed `alpha [local-only]` whose main home clone is checked out on `hotfix` and whose local `main` is ahead of a stale origin | pass: clone on `main` at the main home's tip 86dd6fc (origin has ef36ff1), `origin/HEAD -> origin/main`, origin URL carried over, route registered, sub-registry synced | `seed-scenarios.transcript` |
-| S2 seed remoteless `beta [local-only]` checked out on `feature` | pass: clone on `main` at the source tip, no origin remote | `seed-scenarios.transcript` |
-| S3 seed `gamma [local-only]` with only a `trunk` branch | pass: refused "cannot determine default branch", no home created, no route | `seed-scenarios.transcript` |
-| S4 seed `delta [local-only forge=bogus]` | pass: parser refusal surfaced, seed refused, no home created | `seed-scenarios.transcript` |
-| S5 seed `epsilon [bogus-mode]` | observed: parser maps the unknown token to `no-mistakes off` with a warning (pre-existing), seed then refused for the missing origin | `seed-scenarios.transcript` |
-| S6 reseed `alpha` into the same home | pass: existing up-to-date clone accepted, one route line | `landing-scenarios.transcript` |
-| S7 main home lands a commit on `beta` `main` after seeding, then reseeds | pass: refused "is behind ... bring it up to date", clone and route left intact; after `git pull --ff-only <main clone> main` the reseed succeeds | `landing-scenarios.transcript` |
-| S8 land a `local-only` ship task inside the design home with that home's own `bin/fm-merge-local.sh` | pass: `main` fast-forwarded 86dd6fc -> cd48d8a inside the secondmate home | `landing-scenarios.transcript` |
-| S9a non-forced `bin/fm-teardown.sh design` while the secondmate clone holds cd48d8a and the parent does not | pass: refused, names `project alpha: 1 commit(s) on main`, prints the `git bundle` carry-back; home, spawn record, route and tmux window untouched | `teardown-scenarios.transcript`, `teardown-refusal.err` |
-| S9b run the printed carry-back verbatim | pass: parent clone gains `refs/heads/secondmate/design/main` = cd48d8a | `teardown-scenarios.transcript` |
-| S9c `bin/fm-teardown.sh design` again | pass: retirement completes, home removed, spawn record and route gone, `firstmate:fm-design` window killed on the lab server, parent still holds cd48d8a | `teardown-scenarios.transcript`, `teardown-retire.out` |
-
-Recipes: `lab-setup.sh`, `seed-scenarios.sh`, `landing-scenarios.sh`, `teardown-scenarios.sh`.
+| Lab projects and registry | phase0-setup.sh | phase0-setup.log |
+| S1 seed a local secondmate with local-only (origin and remoteless) plus direct-PR projects | phase1-seed.sh | phase1-seed.log |
+| S2 reseed guards (behind clone, origin/HEAD on another branch, source without a default branch, unresolvable posture) and S3 remote seed refusal | phase2-seed-guards.sh | phase2-seed-guards.log |
+| S4/S5 backlog handoff: accepted with a clone; refused without one, to a remote route, or through a symlinked projects/<repo> | phase3-handoff.sh | phase3-handoff.log |
+| S5d handoff accepted when projects/ itself is a symlink inside the home; wake control | phase4-handoff-more.sh | phase4-handoff-more.log |
+| S6 landing inside the secondmate home with its own fm-merge-local.sh; S7 retirement refusal, carry-back, retirement; S8 unresolved posture refusal | phase5-land-and-retire.sh | phase5-land-and-retire.log |
+| S7b retirement when the main home has no clone of the project | phase7-retire-no-parent-clone.sh | phase7-retire-no-parent-clone.log |
+| Claude primary routing attempt (stopped at the folder-trust dialog) | phase6-primary-setup.sh | phase6-primary-setup.log, phase6-claude-primary-trust-dialog.txt |
+| Targeted test file for this change | tests/fm-secondmate-safety.test.sh | fm-secondmate-safety.test.log |

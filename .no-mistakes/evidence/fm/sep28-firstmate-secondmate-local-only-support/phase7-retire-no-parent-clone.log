@@ -1,0 +1,23 @@
+
+===== S7b ordinary retirement of 'design' while the main home has no gamma clone at all =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-teardown.sh design
+[exit 1]
+REFUSED: secondmate design still holds landed local-only work that the parent home /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main does not have.
+project gamma: 2 commit(s) on main in /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home/projects/gamma have no parent clone at /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/gamma
+Carry them back first: git -C /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home/projects/gamma bundle create /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-design-gamma.bundle main && git clone /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-design-gamma.bundle /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/gamma
+Land that work in the parent home's clone, or get the captain's explicit OK to discard, then --force.
+after refusal: home present=yes meta present=yes window alive=yes
+
+===== S7b run the printed carry-back, which recreates the parent clone from a bundle =====
+$ git -C /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.U5PAXU/design-home/projects/gamma bundle create /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-design-gamma.bundle main && git clone /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-secondmate-design-gamma.bundle /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/gamma
+Cloning into '/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/gamma'...
+[exit 0]
+$ git -C /var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T//fm-lab.U5PAXU/main/projects/gamma log --oneline -2 main
+329cf22 gamma: landed in the design secondmate home
+9b0e869 gamma: initial
+[exit 0]
+
+===== S7b retirement no longer refuses for local-only work (the next guard, unrelated to this change, is the handoff's pending wake reply) =====
+$ /Users/jonathanvu/.no-mistakes/worktrees/38c446864270/01M3NZK4215DGQCD59H7N5EKYZ/bin/fm-teardown.sh design
+[exit 1]
+REFUSED: secondmate design still has an unresolved routed reply
