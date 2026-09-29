@@ -13,7 +13,7 @@ metadata:
 
 Use this reference before creating, seeding, validating, launching, handing backlog to, recovering, pushing inherited local material into, or retiring a persistent secondmate, and before editing `data/secondmates.md`.
 
-Keep the always-inline routing rules in `AGENTS.md` authoritative: route by natural-language `scope:`, a `local-only` project routes by scope to a local secondmate like any other and never to a remote one, and secondmates are idle by default.
+Keep the always-inline routing rules in `AGENTS.md` authoritative: route by natural-language `scope:`, a `local-only` project routes by scope only to a local secondmate whose home holds its clone and never to a remote one, and secondmates are idle by default.
 
 ## Routing table
 

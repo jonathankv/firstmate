@@ -22,6 +22,9 @@
 #   - moving only `## Queued` items, refusing `## In flight` and historical
 #     `## Done` records, which must stay with their home for pruning or
 #     archiving;
+#   - refusing, before anything moves, an item whose `repo:` names a project
+#     this home registers as `local-only` when the destination home holds no
+#     clone of it at projects/<repo>;
 #   - the multi-key classification and idempotent per-key reporting: a key
 #     already present in the secondmate backlog is reported and skipped, and if
 #     any key matches neither backlog nothing is moved;
@@ -296,6 +299,28 @@ backlog_key_section() {
       if (id == key) { print section; found = 1; exit }
     }
     END { exit found ? 0 : 1 }
+  ' "$file"
+}
+
+# Print the `repo:` metadata of a key's header line, or nothing when the header
+# carries none. Like backlog_key_section, this reads only item header lines.
+backlog_key_repo() {
+  local file=$1 key=$2
+  awk -v key="$key" '
+    /^- \[[ x]\] / {
+      rest = $0
+      sub(/^- \[[ x]\] +/, "", rest)
+      id = rest
+      sub(/[ \t].*/, "", id)
+      if (id != key) next
+      if (match(rest, /(\(|,[ \t]*)repo:[ \t]*[^,)]*/)) {
+        repo = substr(rest, RSTART, RLENGTH)
+        sub(/^.*repo:[ \t]*/, "", repo)
+        sub(/[ \t]+$/, "", repo)
+        print repo
+      }
+      exit
+    }
   ' "$file"
 }
 
@@ -990,6 +1015,23 @@ if [ "${#MISSING[@]}" -gt 0 ]; then
   echo "error: no backlog item matched these keys in $MAIN_BACKLOG: ${MISSING[*]}" >&2
   FAILED=1
 fi
+if [ "$FAILED" -ne 0 ]; then
+  echo "       nothing was moved." >&2
+  exit 1
+fi
+
+# A local-only project has no forge to clone from at dispatch, so its work can
+# run only in a home that already holds that project's clone.
+for key in "${TO_MOVE[@]+"${TO_MOVE[@]}"}"; do
+  repo=$(backlog_key_repo "$MAIN_BACKLOG" "$key")
+  [ -n "$repo" ] || continue
+  mode_line=$("$SCRIPT_DIR/fm-project-mode.sh" "$repo" 2>/dev/null) || continue
+  [ "${mode_line%% *}" = local-only ] || continue
+  if [ "$(git -C "$SUB_HOME/projects/$repo" rev-parse --show-toplevel 2>/dev/null || true)" != "$SUB_HOME/projects/$repo" ]; then
+    echo "error: refusing to hand off $key: local-only project $repo has no clone at $SUB_HOME/projects/$repo; seed it into secondmate $ID first (bin/fm-home-seed.sh) or keep the work in this home" >&2
+    FAILED=1
+  fi
+done
 if [ "$FAILED" -ne 0 ]; then
   echo "       nothing was moved." >&2
   exit 1

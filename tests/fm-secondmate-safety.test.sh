@@ -3239,6 +3239,52 @@ EOF
   pass "fm-backlog-handoff refuses Done items under whitespace section headings and unsafe homes"
 }
 
+test_backlog_handoff_refuses_local_only_item_without_clone() {
+  local home subhome subhome_abs before_main out
+  home="$TMP_ROOT/handoff-local-only-main"
+  subhome="$TMP_ROOT/handoff-local-only-sub"
+  mkdir -p "$home/data" "$home/state"
+  seed_secondmate_home_marker "$subhome" design
+  subhome_abs=$(cd "$subhome" && pwd -P)
+  printf -- '- design - feature work (home: %s; scope: feature work; projects: beta; added 2026-06-22)\n' "$subhome_abs" > "$home/data/secondmates.md"
+  cat > "$home/data/projects.md" <<'EOF'
+- alpha [local-only] - local project (added 2026-06-22)
+- beta [no-mistakes] - forge project (added 2026-06-22)
+EOF
+  cat > "$home/data/backlog.md" <<'EOF'
+## In flight
+
+## Queued
+- [ ] beta-task - forge work (repo: beta)
+- [ ] alpha-task - local work (repo: alpha, priority: high)
+
+## Done
+EOF
+  before_main="$TMP_ROOT/handoff-local-only-main.before"
+  cp "$home/data/backlog.md" "$before_main"
+
+  # A local-only item bound for a home without its clone is refused before
+  # anything moves, even when it shares the batch with an acceptable item.
+  if out=$(FM_HOME="$home" "$ROOT/bin/fm-backlog-handoff.sh" design beta-task alpha-task 2>&1); then
+    fail "handoff accepted a local-only item for a home without its clone"
+  fi
+  printf '%s\n' "$out" | grep -F "refusing to hand off alpha-task: local-only project alpha has no clone at $subhome_abs/projects/alpha" >/dev/null \
+    || fail "local-only refusal did not name the item, project, and missing clone path: $out"
+  printf '%s\n' "$out" | grep -F 'beta-task' >/dev/null \
+    && fail "local-only refusal also blamed the no-mistakes item: $out"
+  cmp -s "$before_main" "$home/data/backlog.md" \
+    || fail "local-only refusal mutated the main backlog"
+  [ ! -e "$subhome/data/backlog.md" ] || ! grep -F 'alpha-task' "$subhome/data/backlog.md" >/dev/null \
+    || fail "local-only refusal copied the item into the secondmate backlog"
+
+  # Once the home holds the project's clone, the clone check no longer refuses.
+  fm_git_init_commit "$subhome/projects/alpha"
+  out=$(FM_HOME="$home" "$ROOT/bin/fm-backlog-handoff.sh" design alpha-task 2>&1) || true
+  printf '%s\n' "$out" | grep -F 'has no clone' >/dev/null \
+    && fail "handoff still refused a local-only item after its clone was seeded: $out"
+  pass "fm-backlog-handoff refuses a local-only item for a home without its clone"
+}
+
 test_fm_home_parameterization
 test_lock_status_is_per_home
 test_seed_allows_overlapping_clones_and_drops_owner
@@ -3323,3 +3369,4 @@ test_secondmate_idle_pane_is_not_stale
 test_secondmate_charter_brief_is_idle_by_default
 test_backlog_handoff_aborts_safely
 test_backlog_handoff_refuses_done_items_and_non_secondmate_homes
+test_backlog_handoff_refuses_local_only_item_without_clone
