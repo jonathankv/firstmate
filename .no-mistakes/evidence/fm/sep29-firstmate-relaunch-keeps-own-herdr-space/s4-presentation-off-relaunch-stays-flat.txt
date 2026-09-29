@@ -1,0 +1,23 @@
+# S4 - presentation spaces set to off: a relaunch of a destroyed endpoint stays in the flat layout (fixed code, a9a3e75)
+config/herdr-presentation-spaces = off (primary home); destroyed fmwork's workspace w7
+$ herdr pane get w7:p2  ->  {"error":{"code":"pane_not_found","message":"pane w7:p2 not found"},"id":"cli:pane:get"}
+
+## Layout before
+  w1    firstmate                                tabs: 1
+  w2    2ndmate-momo-design                      tabs: 1, 2ndmate-momo-design-respawned, fm-pkg2
+  w5    └ pkg2 · p:3d-PrnYp56fQ8abKs5GrOg        tabs: captain-scratch
+  w6    └ pkg · p:02-SL6tP1XWQwJ7rRtdvOw         tabs: fm-pkg
+
+## $ bin/fm-control.sh fmwork relaunch --note '...'   (typed into the firstmate seat pane w1:p1)
+exit code: 0
+stdout:
+  relaunched fmwork harness=claude from=claude model=default effort=default backend=herdr endpoint=fm-lab-relaunch-ws-95232-22019:w1:p2 worktree=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.8TwQaN/treehouse-pool/.treehouse/project-dcbba0/1/project
+stderr (herdr/placement lines):
+
+## Layout after (sidebar order)
+  w1    firstmate                                tabs: 1, fm-fmwork
+  w2    2ndmate-momo-design                      tabs: 1, 2ndmate-momo-design-respawned, fm-pkg2
+  w5    └ pkg2 · p:3d-PrnYp56fQ8abKs5GrOg        tabs: captain-scratch
+  w6    └ pkg · p:02-SL6tP1XWQwJ7rRtdvOw         tabs: fm-pkg
+workspace count: before=4 after=4
+fmwork record: window=fm-lab-relaunch-ws-95232-22019:w1:p2 herdr_workspace_id=w1 

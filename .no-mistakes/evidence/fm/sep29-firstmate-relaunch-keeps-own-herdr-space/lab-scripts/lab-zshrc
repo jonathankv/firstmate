@@ -1,0 +1,2 @@
+export PATH=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.8TwQaN/agentbin:"$PATH"
+unalias claude 2>/dev/null

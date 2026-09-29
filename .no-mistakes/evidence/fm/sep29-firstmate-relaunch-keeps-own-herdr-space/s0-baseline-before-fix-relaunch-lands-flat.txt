@@ -1,0 +1,24 @@
+# S0 baseline - the same second-mate relaunch run with the BASE commit 260c4f0 (before the fix)
+
+## Layout after a base-code fresh spawn of pkgold from the second mate's seat
+  w1    firstmate                                tabs: 1, fm-fmwork
+  w2    2ndmate-momo-design                      tabs: 1, 2ndmate-momo-design-respawned, fm-pkg2
+  w5    └ pkg2 · p:3d-PrnYp56fQ8abKs5GrOg        tabs: captain-scratch
+  w6    └ pkg · p:02-SL6tP1XWQwJ7rRtdvOw         tabs: fm-pkg
+  w8    └ pkgold · p:9MprAdRrLYe-fdK5HYC6Qw      tabs: fm-pkgold
+
+## Destroyed pkgold's workspace w8
+$ herdr pane get w8:p2  ->  {"error":{"code":"pane_not_found","message":"pane w8:p2 not found"},"id":"cli:pane:get"}
+
+## $ <base>/bin/fm-control.sh pkgold relaunch --note '...'   (typed into the second mate's seat pane w2:p2)
+exit code: 0
+stdout:
+  relaunched pkgold harness=claude from=claude model=default effort=default backend=herdr endpoint=fm-lab-relaunch-ws-95232-22019:w2:p4 worktree=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.8TwQaN/treehouse-pool/.treehouse/project-dcbba0/4/project
+stderr (herdr/placement lines):
+
+## Layout after (sidebar order) - pkgold is now a flat tab inside 2ndmate-momo-design, with no workspace of its own
+  w1    firstmate                                tabs: 1, fm-fmwork
+  w2    2ndmate-momo-design                      tabs: 1, 2ndmate-momo-design-respawned, fm-pkg2, fm-pkgold
+  w5    └ pkg2 · p:3d-PrnYp56fQ8abKs5GrOg        tabs: captain-scratch
+  w6    └ pkg · p:02-SL6tP1XWQwJ7rRtdvOw         tabs: fm-pkg
+pkgold record: window=fm-lab-relaunch-ws-95232-22019:w2:p4 herdr_workspace_id=w2 

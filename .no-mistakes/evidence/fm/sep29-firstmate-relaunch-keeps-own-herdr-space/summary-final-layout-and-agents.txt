@@ -1,0 +1,34 @@
+# Summary - Herdr relaunch placement, live lab fm-lab-relaunch-ws-95232-22019 (herdr 0.9.2)
+Fixed code: a9a3e75. Baseline: 260c4f0 (exported with git archive into the lab).
+
+## Final layout, in the order the Herdr sidebar draws workspaces
+  w1    firstmate                                tabs: 1, fm-fmwork
+  w2    2ndmate-momo-design                      tabs: 1, 2ndmate-momo-design-respawned, fm-pkg2, fm-pkgold
+  w5    └ pkg2 · p:3d-PrnYp56fQ8abKs5GrOg        tabs: captain-scratch
+  w6    └ pkg · p:02-SL6tP1XWQwJ7rRtdvOw         tabs: fm-pkg
+
+## Registered agents and the workspace each one sits in (herdr agent list)
+  w1:p2  workspace=w1  agent=claude  status=idle
+  w2:p3  workspace=w2  agent=claude  status=idle
+  w2:p4  workspace=w2  agent=claude  status=idle
+  w6:p2  workspace=w6  agent=claude  status=idle
+
+## Which task is which
+  primary fmwork  window=w1:p2
+  momo    pkg     window=w6:p2
+  momo    pkg2    window=w2:p3
+  momo    pkgold  window=w2:p4
+
+Reading: pkg (fixed code) sits alone in its own workspace w6 under 2ndmate-momo-design; pkgold (base code, same steps) sits as a flat tab inside 2ndmate-momo-design (w2:p4).
+pkg2 is flat in w2 on purpose: its earlier projection w5 still carried its token, so the guard left w5 and its journal untouched (S3).
+fmwork is flat in w1 on purpose: its home opted out with herdr-presentation-spaces=off (S4); before that, S2 had placed it in its own workspace directly after firstmate.
+
+## Herdr calls that created or moved workspaces during the whole run (from the lab wrapper log)
+  workspace create --cwd /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.8TwQaN/project --label └ fmwork · p:vtO71El_cAFFKLi3OQffNA --
+  api schema --json --session fm-lab-relaunch-ws-95232-22019
+  workspace create --cwd /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.8TwQaN/project --label └ pkg · p:hnCIbjIyrfAUvdvnyaWi5w --no-
+  workspace create --cwd /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.8TwQaN/project --label └ pkg2 · p:3d-PrnYp56fQ8abKs5GrOg --no
+  workspace create --cwd /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.8TwQaN/treehouse-pool/.treehouse/project-dcbba0/2/project --l
+  workspace create --cwd /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.8TwQaN/treehouse-pool/.treehouse/project-dcbba0/1/project --l
+  api schema --json --session fm-lab-relaunch-ws-95232-22019
+  workspace create --cwd /private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.8TwQaN/project --label └ pkgold · p:9MprAdRrLYe-fdK5HYC6Qw --

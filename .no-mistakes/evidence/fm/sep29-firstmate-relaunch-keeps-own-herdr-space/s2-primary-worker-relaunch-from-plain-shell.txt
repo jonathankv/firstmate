@@ -1,0 +1,29 @@
+# S2 - the primary's worker is relaunched from a plain shell (no Herdr pane) after its pane was destroyed (fixed code, a9a3e75)
+
+## Layout before
+  w1    firstmate                                tabs: 1
+  w3    └ fmwork · p:vtO71El_cAFFKLi3OQffNA      tabs: fm-fmwork
+  w2    2ndmate-momo-design                      tabs: 1, 2ndmate-momo-design-respawned
+  w5    └ pkg2 · p:3d-PrnYp56fQ8abKs5GrOg        tabs: fm-pkg2
+  w6    └ pkg · p:02-SL6tP1XWQwJ7rRtdvOw         tabs: fm-pkg
+fmwork record: window=fm-lab-relaunch-ws-95232-22019:w3:p2 herdr_workspace_id=w3 
+fmwork journal: version=2 projection_id=vtO71El_cAFFKLi3OQffNA 
+
+## Destroyed fmwork's workspace w3
+$ herdr pane get w3:p2  ->  {"error":{"code":"pane_not_found","message":"pane w3:p2 not found"},"id":"cli:pane:get"}
+
+## $ bin/fm-control.sh fmwork relaunch --note '...'   (plain shell: no HERDR_PANE_ID, FM_HOME=primary, HERDR_SESSION=lab)
+exit code: 0
+stdout:
+  relaunched fmwork harness=claude from=claude model=default effort=default backend=herdr endpoint=fm-lab-relaunch-ws-95232-22019:w7:p2 worktree=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.8TwQaN/treehouse-pool/.treehouse/project-dcbba0/1/project
+stderr (herdr/placement lines):
+
+## Layout after (sidebar order)
+  w1    firstmate                                tabs: 1
+  w7    └ fmwork · p:1c7bdWt_toaaZ6Pw0sup3A      tabs: fm-fmwork
+  w2    2ndmate-momo-design                      tabs: 1, 2ndmate-momo-design-respawned
+  w5    └ pkg2 · p:3d-PrnYp56fQ8abKs5GrOg        tabs: fm-pkg2
+  w6    └ pkg · p:02-SL6tP1XWQwJ7rRtdvOw         tabs: fm-pkg
+fmwork record: window=fm-lab-relaunch-ws-95232-22019:w7:p2 herdr_workspace_id=w7 
+fmwork journal: version=2 projection_id=1c7bdWt_toaaZ6Pw0sup3A workspace_id=w7 parent_workspace_id=w1 parent_label=firstmate 
+last stand-in launch: 15:56:06 pane=w7:p2 cwd=/private/var/folders/my/pvdfczzj0ng_bh1rdn867lf80000gn/T/fm-lab.8TwQaN/treehouse-pool/.treehouse/project-dcbba0/1/project
